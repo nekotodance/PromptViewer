@@ -5,7 +5,7 @@ StableDiffusionで作成した画像のプロンプト情報を確認しなが�
 簡易に行うのを目的としたツールとなります。
 
 「docs/PromptViewer-image.jpg」を参照
-!["PromptViewer-image"]("docs/PromptViewer-image.jpg")
+![PromptViewer-image](docs/PromptViewer-image.jpg)
 
 ========================================
 インストール方法
