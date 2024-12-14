@@ -33,6 +33,9 @@ StableDiffusionで作成した画像のプロンプト情報を確認しなが�
     pip install PyQt5 pyperclip Image  
 ###### 3-4)動作確認  
     py PromptViewer.py  
+    
+###### 3-5)設定の変更
+！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと
 
 #### 4)起動に便利なショートカットの作成
   適当なフォルダで右クリックして「新規作成」->「ショートカット」  
