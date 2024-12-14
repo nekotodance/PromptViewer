@@ -5,7 +5,7 @@ StableDiffusionで作成した画像のプロンプト情報を確認しなが�
 
 ## インストール方法
 インストールフォルダをC:\tool\git\PromptViewerとした場合で説明。  
-Pythonはインストールされているものとします。  
+！Pythonはインストールされていて最低限の知識はあるものとします。
 
 #### 1)C:\tool\git\PromptViewerを作成
 #### 2)以下のファイルを格納する
@@ -43,9 +43,8 @@ Pythonはインストールされているものとします。
 
 ## 設定ファイルについて
 PromptViewer_settings.jsonに以下の情報を保持しています。  
-！  
 ！特にimage-fcopy-dir、image-fmove-dirは【自分の環境に合わせて必ず】書き換えてください  
-！  
+
 image-fcopy-dir   : W,上キーによるファイルのコピー先フォルダ名  
 image-fmove-dir   : S,下キーによるファイルのムーブ先フォルダ名（こちらはファイルの移動となるので注意）  
 
