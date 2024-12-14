@@ -23,23 +23,25 @@ StableDiffusionで作成した画像のプロンプト情報を確認しなが�
 ※1:設定ファイルはなければ自動で作成されるのでなくても良い
   
 #### 3)コマンドプロンプトを立ち上げて以下を実行する。この手順はインストールの一度のみ
-###### 3-1)カレントフォルダの移動移動  
-    c:  
-    cd C:\tool\git\PromptViewer  
-###### 3-2)venv環境を作成、activateする  
-    py -m venv venv  
-    .\venv\Scripts\activate.bat  
-###### 3-3)利用するライブラリをインストールする  
-    pip install PyQt5 pyperclip Image  
-###### 3-4)動作確認  
-    py PromptViewer.py  
+###### 3-1)カレントフォルダの移動移動
+    c:
+    cd C:\tool\git\PromptViewer
+###### 3-2)venv環境を作成、activateする
+    py -m venv venv
+    .\venv\Scripts\activate.bat
+###### 3-3)利用するライブラリをインストールする
+    pip install PyQt5 pyperclip Image
+###### 3-4)動作確認
+    py PromptViewer.py
     
 ###### 3-5)設定の変更
 ！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと
 
 #### 4)起動に便利なショートカットの作成
+###### 3-1)カレントフォルダの移動移動
   適当なフォルダで右クリックして「新規作成」->「ショートカット」  
-  「項目の場所を...」に以下を入力  
+###### 3-1)カレントフォルダの移動移動
+「項目の場所を...」に以下を入力
   C:\tool\git\PromptViewer\Scripts\pythonw.exe C:\tool\git\PromptViewer\PromptViewer.py  
   
   今後は作成したショートカットをダブルクリックでアプリのように使えます  
