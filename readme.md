@@ -1,14 +1,14 @@
 ## PromptViewerについて
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを
-簡易に行うのを目的としたツールとなります  
+簡易に行うのを目的としたツールです  
 ![PromptViewer-image](docs/PromptViewer-image.jpg)
 
 ## インストール方法
 インストールフォルダをC:\tool\git\PromptViewerとした場合で説明  
-！Pythonはインストールされていて最低限の知識はあるものとします  
+！Pythonはインストールされていて最低限の知識はあるものとします！  
 
 #### 1)C:\tool\git\PromptViewerを作成
-#### 2)以下のファイルを格納する
+#### 2)以下のファイルを格納
   PromptViewer.py  
   PromptViewer_beep.wav  
   PromptViewer_filecansel.wav  
@@ -26,16 +26,16 @@ StableDiffusionで作成した画像のプロンプト情報を確認しなが�
 ###### 3-1)カレントフォルダの移動移動
     c:
     cd C:\tool\git\PromptViewer
-###### 3-2)venv環境を作成、activateする
+###### 3-2)venv環境を作成、activate
     py -m venv venv
     .\venv\Scripts\activate.bat
-###### 3-3)利用するライブラリをインストールする
+###### 3-3)利用するライブラリをインストール
     pip install PyQt5 pyperclip Image
 ###### 3-4)動作確認
     py PromptViewer.py
     
 ###### 3-5)設定の変更
-！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと
+！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと！
 
 #### 4)起動に便利なショートカットの作成
   適当なフォルダで右クリックして「新規作成」->「ショートカット」  
@@ -46,7 +46,7 @@ StableDiffusionで作成した画像のプロンプト情報を確認しなが�
 
 ## 設定ファイルについて
 PromptViewer_settings.jsonに以下の情報を保持しています  
-！特にimage-fcopy-dir、image-fmove-dirは【自分の環境に合わせて必ず】書き換えてください  
+！特にimage-fcopy-dir、image-fmove-dirは【自分の環境に合わせて必ず】書き換えてください！  
 
 image-fcopy-dir   : W,上キーによるファイルのコピー先フォルダ名  
 image-fmove-dir   : S,下キーによるファイルのムーブ先フォルダ名（こちらはファイルの移動となるので注意）  
@@ -86,5 +86,10 @@ H         : Hires Prompt文字列をコピーバッファへ
 
 ※2:コピーは再度キーを押すことでキャンセル（コピー先から削除）出来ます  
 ※3:ムーブは再度キーを押すことで取り消し出来ます（画像から移動していない場合のみ可能）  
+
+## 注意事項
+・Automatic1111かForgeの出力ファイルでしか確認していません。
+・現状はPrompt情報の改行コードがうまく拾えていません。Imageライブラリの利用方法か、文字コードの指定に問題があるかもしれません。
+・一応jpgファイルも表示できますが、自作のツールでのPrompt情報をExifタグコメントかjpgコメント部分にコピーしたものでしか動作確認していません。またその際、現物に合わせた改行コードの置換を行っています。
 
 以上
