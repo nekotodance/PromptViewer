@@ -1,11 +1,11 @@
 ## PromptViewerについて
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを
-簡易に行うのを目的としたツールとなります。
+簡易に行うのを目的としたツールとなります  
 ![PromptViewer-image](docs/PromptViewer-image.jpg)
 
 ## インストール方法
-インストールフォルダをC:\tool\git\PromptViewerとした場合で説明。  
-！Pythonはインストールされていて最低限の知識はあるものとします。
+インストールフォルダをC:\tool\git\PromptViewerとした場合で説明  
+！Pythonはインストールされていて最低限の知識はあるものとします  
 
 #### 1)C:\tool\git\PromptViewerを作成
 #### 2)以下のファイルを格納する
@@ -38,16 +38,14 @@ StableDiffusionで作成した画像のプロンプト情報を確認しなが�
 ！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと
 
 #### 4)起動に便利なショートカットの作成
-###### 3-1)カレントフォルダの移動移動
   適当なフォルダで右クリックして「新規作成」->「ショートカット」  
-###### 3-1)カレントフォルダの移動移動
 「項目の場所を...」に以下を入力
   C:\tool\git\PromptViewer\Scripts\pythonw.exe C:\tool\git\PromptViewer\PromptViewer.py  
   
   今後は作成したショートカットをダブルクリックでアプリのように使えます  
 
 ## 設定ファイルについて
-PromptViewer_settings.jsonに以下の情報を保持しています。  
+PromptViewer_settings.jsonに以下の情報を保持しています  
 ！特にimage-fcopy-dir、image-fmove-dirは【自分の環境に合わせて必ず】書き換えてください  
 
 image-fcopy-dir   : W,上キーによるファイルのコピー先フォルダ名  
