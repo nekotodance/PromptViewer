@@ -23,15 +23,15 @@ Pythonはインストールされているものとします。
 ※1:設定ファイルはなければ自動で作成されるのでなくても良い
   
 #### 3)コマンドプロンプトを立ち上げて以下を実行する。この手順はインストールの一度のみ
-  3-1)カレントフォルダの移動移動  
+###### 3-1)カレントフォルダの移動移動  
     c:  
     cd C:\tool\git\PromptViewer  
-  3-2)venv環境を作成、activateする  
+###### 3-2)venv環境を作成、activateする  
     py -m venv venv  
     .\venv\Scripts\activate.bat  
-  3-3)利用するライブラリをインストールする  
+###### 3-3)利用するライブラリをインストールする  
     pip install PyQt5 pyperclip Image  
-  3-4)動作確認  
+###### 3-4)動作確認  
     py PromptViewer.py  
 
 #### 4)起動に便利なショートカットの作成
