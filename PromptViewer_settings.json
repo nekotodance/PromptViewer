@@ -1,0 +1,15 @@
+{
+    "image-fcopy-dir": "W:/_temp/ai",
+    "image-fmove-dir": "W:/_temp/ai2",
+    "sound-beep": "PromptViewer_beep.wav",
+    "sound-fcopy-ok": "PromptViewer_filecopyok.wav",
+    "sound-fmove-ok": "PromptViewer_filemoveok.wav",
+    "sound-f-cansel": "PromptViewer_filecansel.wav",
+    "sound-move-top": "PromptViewer_movetop.wav",
+    "sound-move-end": "PromptViewer_moveend.wav",
+    "info-label-w": 480,
+    "geometry-x": 2306,
+    "geometry-y": 401,
+    "geometry-w": 1080,
+    "geometry-h": 984
+}
