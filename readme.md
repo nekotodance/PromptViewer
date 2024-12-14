@@ -39,10 +39,10 @@ StableDiffusionで作成した画像のプロンプト情報を確認しなが�
 
 #### 4)起動に便利なショートカットの作成
   適当なフォルダで右クリックして「新規作成」->「ショートカット」  
-  項目の場所に以下を入力  
+  「項目の場所を...」に以下を入力  
   C:\tool\git\PromptViewer\Scripts\pythonw.exe C:\tool\git\PromptViewer\PromptViewer.py  
   
-  今後はショートカットをダブルクリックでアプリのように使えます  
+  今後は作成したショートカットをダブルクリックでアプリのように使えます  
 
 ## 設定ファイルについて
 PromptViewer_settings.jsonに以下の情報を保持しています。  
