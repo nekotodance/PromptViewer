@@ -1,6 +1,7 @@
 ## PromptViewerについて
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを
 簡易に行うのを目的としたツールです  
+マウスだけでサクサクプレビューと振り分けが出来ます
 ![PromptViewer-image](docs/PromptViewer-image.jpg)
 
 ## インストール方法
