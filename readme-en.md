@@ -1,7 +1,7 @@
 ## About PromptViewer
 PromptViewer is a tool designed to easily sort images created with StableDiffusion into a specified folder while checking the prompt information.  
 You can preview and sort images quickly and easily with just a mouse click!  
-! [PromptViewer-image](docs/PromptViewer-image001.jpg)
+![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
 ## How to install
 The installation method is explained in the case that the installation folder is C:\tool\git\PromptViewer  
@@ -90,7 +90,7 @@ Left drag : Move the window
 
 ## About Prompt display
 Prompt information is displayed in different colors and thicknesses to improve readability.  
-! [PromptViewer-image](docs/PromptViewer-image002.jpg)
+![PromptViewer-image](docs/PromptViewer-image002.jpg)
 
 Gray : Prompt  
 Purple : Negative Prompt  
