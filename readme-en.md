@@ -88,17 +88,24 @@ Left drag : Move the window
 2: Copying can be canceled (deleted from the destination) by pressing the key again.  
 3: Move can be canceled by pressing the key again (only possible when not moving from the image).  
 
-## About Prompt display
-Prompt information is displayed in different colors and thicknesses to improve readability.  
+## Screen Display
 ![PromptViewer-image](docs/PromptViewer-image002.jpg)
 
-Gray : Prompt  
-Purple : Negative Prompt  
-Green : Hires Prompt  
-Yellow Bold : Lora Name  
-Light blue bold : Seed number  
-Orange bold : Model name  
-Orange : Colorize text ADetailer prompt, Steps:  
+#### Window Title
+Full path file name of [number of currently displayed image/total number of images in the same folder].  
+
+#### Prompt Info
+Display the text in different colors and thicknesses as follows
+- Gray : Prompt  
+- Purple : Negative Prompt  
+- Green : Hires Prompt  
+- Yellow Bold : Lora Name  
+- Light blue bold : Seed number  
+- Bold orange : Model name  
+- Orange : Colorize text ADetailer prompt, Steps:, steps:  
+
+#### Status Bar
+Display of operation status
 
 ## Notes.
 - We have only checked with Automatic1111 or Forge output files.  
