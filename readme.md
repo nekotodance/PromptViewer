@@ -1,7 +1,7 @@
 ## PromptViewerについて
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを
 簡易に行うのを目的としたツールです  
-マウスだけでプレビューと振り分けがサクサク出来ます
+マウスだけでプレビューと振り分けがサクサク出来ます  
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
 ## インストール方法
@@ -88,6 +88,18 @@ H         : Hires Prompt文字列をコピーバッファへ
 
 ※2:コピーは再度キーを押すことでキャンセル（コピー先から削除）出来ます  
 ※3:ムーブは再度キーを押すことで取り消し出来ます（画像から移動していない場合のみ可能）  
+
+## Prompt表示について
+Prompt情報は文字の色や太さを変えて可読性を上げています  
+![PromptViewer-image](docs/PromptViewer-image002.jpg)
+
+灰色 : Prompt  
+紫色 : Negative Prompt  
+緑色 : Hires Prompt  
+黄色太 : Lora名  
+水色太 : Seed番号  
+橙色太 : Model名  
+橙色 : 文字を着色 ADetailer prompt、Steps:、steps:  
 
 ## 注意事項
 ・Automatic1111かForgeの出力ファイルでしか確認していません。  
