@@ -91,28 +91,21 @@ H         : Hires Prompt文字列をコピーバッファへ
 ※2:コピーは再度キーを押すことでキャンセル（コピー先から削除）出来ます  
 ※3:ムーブは再度キーを押すことで取り消し出来ます（画像から移動していない場合のみ可能）  
 
-## 画面表示
+## Prompt表示について
+Prompt情報は文字の色や太さを変えて可読性を上げています  
 ![PromptViewer-image](docs/PromptViewer-image002.jpg)
 
-#### Window Title
-「[現在表示中の画像番号/同一フォルダ内の画像総数] フルパスのファイル名」  
-
-#### Prompt Info
-以下のように文字の色や太さを変えて表示
-- 灰色 : Prompt  
-- 紫色 : Negative Prompt  
-- 緑色 : Hires Prompt  
-- 黄色太 : Lora名  
-- 水色太 : Seed番号  
-- 橙色太 : Model名  
-- 橙色 : 文字を着色 ADetailer prompt、Steps:、steps:  
-
-#### Status Bar
-動作状況の表示
+灰色 : Prompt  
+紫色 : Negative Prompt  
+緑色 : Hires Prompt  
+黄色太 : Lora名  
+水色太 : Seed番号  
+橙色太 : Model名  
+橙色 : 文字を着色 ADetailer prompt、Steps:、steps:  
 
 ## 注意事項
-・Automatic1111かForgeの出力ファイルでしか確認していません。  
-・現状はPrompt情報の改行コードがうまく拾えていません。Imageライブラリの利用方法か、文字コードの指定に問題があるかもしれません。  
-・一応jpgファイルも表示できますが、自作のツールでのPrompt情報をExifタグコメントかjpgコメント部分にコピーしたものでしか動作確認していません。またその際、現物に合わせた改行コードの置換を行っています。  
+- Automatic1111かForgeの出力ファイルでしか確認していません。  
+- 現状はPrompt情報の改行コードがうまく拾えていません。Imageライブラリの利用方法か、文字コードの指定に問題があるかもしれません。  
+- 一応jpgファイルも表示できますが、自作のツールでのPrompt情報をExifタグコメントかjpgコメント部分にコピーしたものでしか動作確認していません。またその際、現物に合わせた改行コードの置換を行っています。  
 
 以上
