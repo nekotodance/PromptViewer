@@ -2,7 +2,7 @@
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを
 簡易に行うのを目的としたツールです  
 マウスだけでプレビューと振り分けがサクサク出来ます
-![PromptViewer-image](docs/PromptViewer-image.jpg)
+![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
 ## インストール方法
 インストールフォルダをC:\tool\git\PromptViewerとした場合で説明  
@@ -44,6 +44,7 @@ StableDiffusionで作成した画像のプロンプト情報を確認しなが�
   C:\tool\git\PromptViewer\Scripts\pythonw.exe C:\tool\git\PromptViewer\PromptViewer.py  
   
   今後は作成したショートカットをダブルクリックでアプリのように使えます  
+  またこのショートカットにファイル（もしくは画像を格納したフォルダ）をドラッグ＆ドロップも可能  
 
 ## 設定ファイルについて
 PromptViewer_settings.jsonに以下の情報を保持しています  
