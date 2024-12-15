@@ -10,6 +10,9 @@ import html
 import pyperclip
 import pvsubfunc
 
+# 引数取得
+args = sys.argv
+
 # アプリ名称
 WINDOW_TITLE = "Prompt Viewer"
 # 設定ファイル
@@ -125,6 +128,10 @@ class ImageViewer(QMainWindow):
         self.dragging = False
         self.last_pos = None
 
+        # 引数にてファイルorフォルダ指定
+        if len(args) > 1:
+            self.loadFile(args[1])
+
     #設定ファイルの初期値作成
     def createSettingFile(self):
         pvsubfunc.write_value_to_config(SETTINGS_FILE, IMAGE_FCOPY_DIR, "W:/_temp/ai")
@@ -137,7 +144,7 @@ class ImageViewer(QMainWindow):
         pvsubfunc.write_value_to_config(SETTINGS_FILE, SOUND_MOVE_END,  "PromptViewer_moveend.wav")
         pvsubfunc.write_value_to_config(SETTINGS_FILE, INFO_LABEL_W, 480)
         self.save_settings()
-    
+
     def load_settings(self):
         self.imageFileCopyDir = pvsubfunc.read_value_from_config(SETTINGS_FILE, IMAGE_FCOPY_DIR)
         self.imageFileMoveDir = pvsubfunc.read_value_from_config(SETTINGS_FILE, IMAGE_FMOVE_DIR)
@@ -464,6 +471,20 @@ class ImageViewer(QMainWindow):
                 return True  # イベントをここで処理したとみなして消費
         return super().eventFilter(obj, event)
 
+    def loadFile(self, fname):
+        if os.path.isfile(fname):
+            self.loadImage(fname)
+        elif os.path.isdir(fname):
+            files = sorted([f for f in os.listdir(fname) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
+            if len(files) > 0:
+                self.loadImage(fname + self.DirSepa + files[0])
+            else:
+                self.showStatusBarMes(f"no image files in this folder")
+                self.play_wave(self.soundBeep)
+        else:
+            self.showStatusBarMes(f"not support file type")
+            self.play_wave(self.soundBeep)
+
     #========================================
     #= キーイベント処理
     #========================================
@@ -531,18 +552,7 @@ class ImageViewer(QMainWindow):
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
             filePath = event.mimeData().urls()[0].toLocalFile()
-            if os.path.isfile(filePath):
-                self.loadImage(filePath)
-            elif os.path.isdir(filePath):
-                files = sorted([f for f in os.listdir(filePath) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
-                if len(files) > 0:
-                    self.loadImage(filePath + self.DirSepa + files[0])
-                else:
-                    self.showStatusBarMes(f"no image files in this folder")
-                    self.play_wave(self.soundBeep)
-            else:
-                self.showStatusBarMes(f"not support file type")
-                self.play_wave(self.soundBeep)
+            self.loadFile(filePath)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton and not self.fullscreen:
