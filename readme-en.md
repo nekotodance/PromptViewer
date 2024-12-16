@@ -74,10 +74,10 @@ Q,ESC : Exit
 F,Enter : Switch to full screen display (toggle action)  
 W,Top : Copy the displayed image to the folder specified by “image-fcopy-dir” in the setting file *2  
 S,Down : Move the displayed image to the folder specified by “image-fmove-dir” in the configuration file *3  
-K : Seed number to copy buffer  
-P : Prompt string to copy buffer  
-N : Negative Prompt string to copy buffer  
-H : Hires Prompt string to copy buffer  
+K : Seed number to copy buffer *4  
+P : Prompt string to copy buffer *4  
+N : Negative Prompt string to copy buffer *4  
+H : Hires Prompt string to copy buffer *4  
 
 #### Mouse operation
 Wheel operation : move to the next/previous image in the same folder  
@@ -87,6 +87,7 @@ Left drag : Move the window
 
 2: Copying can be canceled (deleted from the destination) by pressing the key again.  
 3: Move can be canceled by pressing the key again (only possible when not moving from the image).  
+4: ComfyUI output files are not supported.  
 
 ## Screen Display
 ![PromptViewer-image](docs/PromptViewer-image002.jpg)
@@ -104,10 +105,13 @@ Display the text in different colors and thicknesses as follows
 - Bold orange : Model name  
 - Orange : Colorize text ADetailer prompt, Steps:, steps:  
 
+*Output files from ComfyUI are only partially supported.  
+
 #### Status Bar
 Display of operation status
 
 ## Notes.
-- We have only checked with Automatic1111 or Forge output files.  
+- Automatic1111, Forge, and ComfyUI output files can be displayed.  
+- However, copying and coloring of ComfyUI Prompt information is not supported.  
 - Currently, Prompt information does not pick up newline codes well, so there may be a problem with the Image library or the character encoding.  
 - It can display jpg files, but I have only confirmed that it works with the Prompt information from my own tool, which is copied into the Exif tag comment or jpg comment section. In doing so, I have also replaced the line feed code to match the original.  
