@@ -52,6 +52,7 @@ class ImageViewer(QMainWindow):
         self.soundMoveTop = ""
         self.soundMoveEnd = ""
         self.infoLabelWidth = 480
+        self.filetype = -1     #-1:no comment, 0:org jpg 1:sd1111 or forge png, 2:comfyUI png, 3:other file
 
         self.NewLine = '\u2029'
         self.DirSepa = "/"
@@ -206,96 +207,141 @@ class ImageViewer(QMainWindow):
     def showStatusBarMes(self, mes):
         self.statusBar.showMessage(f"{mes}")
 
+    def showStatusBarErrorMes(self, mes):
+        self.statusBar.showMessage(f"{mes}")
+        self.play_wave(self.soundBeep)
+
+    def initCopyInfo(self):
+        self.infoSeed = ""
+        self.infoPrompt = ""
+        self.infoNegaPrompt = ""
+        self.infoHighResPrompt = ""
+
+    def addTextColorSD(self, comstr):
+        comres = "Prompt: " + comstr
+        #文字列部分の改行エスケープを消しておく
+        comres = comres.replace("\"","")
+        comres = comres.replace("\\n", "\n")
+
+        #コピー可能なPrompt情報を退避
+        res = pvsubfunc.extract_between(comres, "Seed: ", ", Size:")
+        if res: self.infoSeed = str(res[0])
+        res = pvsubfunc.extract_between(comres, "Prompt: ", "Negative prompt: ")
+        if res:
+            self.infoPrompt = pvsubfunc.normalize_newlines(res[0], os.linesep)
+        res = pvsubfunc.extract_between(comres, "Negative prompt: ", "Steps: ")
+        if res:
+            self.infoNegaPrompt = pvsubfunc.normalize_newlines(res[0], os.linesep)
+        res = pvsubfunc.extract_between(comres, "Hires prompt: ", ", Hires upscale: ")
+        if res:
+            self.infoHighResPrompt = pvsubfunc.normalize_newlines(res[0], os.linesep)
+
+
+        #ウィジェット用のHTMLエスケープ、改行の加工
+        comres = html.escape(pvsubfunc.normalize_newlines(comres, self.NewLine))
+        #ウィジェット用に見やすくするための改行を追加
+        if self.filetype == 1:      #-1:no comment, 0:org jpg 1:sd1111 or forge png, 2:comfyUI png, 3:other file
+            comres = comres.replace("Negative prompt: ", self.NewLine+"Negative prompt: ")
+            comres = comres.replace("Steps: ", self.NewLine+"Steps: ")
+        comres = comres.replace("Hires prompt: ", self.NewLine+"Hires prompt: ")
+        comres = comres.replace(", Hires upscale: ", self.NewLine+"Hires upscale: ")
+        #promptを灰色に
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "Prompt: ", "Negative prompt: ",
+                                        "<span style='color: #CCCCCC;'>", "</span>")
+        #negative promptを紫に
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "Negative prompt: ", "Steps: ",
+                                        "<span style='color: #CC4488;'>", "</span>")
+        #hires promptを緑に
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "Hires prompt: ", "Hires upscale: ",
+                                        "<span style='color: #33CC00;'>", "</span>")
+        #SEED番号の強調
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "Seed: ", ", Size:",
+                                        "<span style='color: #00FFFF; font-size: 14px;'><b>", "</b></span>")
+        #Model名の強調
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "Model: ", ", VAE",
+                                        "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
+        #Lora部分の強調
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "&lt;lora:", "&gt;",
+                                        "<span style='color: #FFFF00; font-size: 14px;'><b>", "</b></span>")
+        #各種強調表示
+        for pword in {"ADetailer prompt", "Steps:", "steps:"}:
+            comres = pvsubfunc.add_around_all(comres, pword, "<span style='color: #CC4400;'>", "</span>")
+
+        return comres
+
+    #T.B.D きちんと要素判定しないと、文字列の検索だけでは厳しい
+    def addTextColorComfyUI(self, comstr):
+        comres = comstr
+        #promptを灰色に
+        print("{\"inputs\": {\"text\": ")
+        comres = pvsubfunc.insert_between_all(comres,
+                                        " {\"inputs\": {\"text\": \"", "\",",
+                                        "<span style='color: #CCCCCC;'>", "</span>")
+        #Lora部分の強調
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "{\"lora_name\": \"", "\",",
+                                        "<span style='color: #FFFF00; font-size: 14px;'><b>", "</b></span>")
+        #各種強調表示
+        for pword in {"seed:", "Steps:", "steps:"}:
+            comres = pvsubfunc.add_around_all(comres, pword, "<span style='color: #CC4400;'>", "</span>")
+        return comres
+
     def updateInfo(self):
-        if self.currentImage:
-            pixmap = QPixmap(self.currentImage)
-            width, height = pixmap.width(), pixmap.height()
-            self.imageWidth, self.imageHeight = width, height
-            reader = QImageReader(self.currentImage)
-            #keys = reader.textKeys()    #keyの一覧を取得
-            comment = "- None -"
-            imgcomment = ""
-            filetype = 0
-            #ToDo:改行コードと先頭と終端の扱いがおかしい
-            # jpgでは改行コードが￥￥nの￥nだけで改行してるのと文頭と文末に無駄なキャラがいる
-            # pngではreader.textでキャリッジ・リターンが無視されている感じ？
-            if self.currentImage.lower().endswith(('.jpg', '.jpeg')):
-                imgcomment = str(pvsubfunc.get_jpg_comment(self.currentImage))
-                #自作の変換ツールを通したjpgをImageライブラリで読み込むと不要なバイトなどがあるので修正する
-                imgcomment = pvsubfunc.remove_jpg_comment_Exifbyte(imgcomment)
-                filetype = 0
-            elif self.currentImage.lower().endswith(('.png')):
-                imgcomment = str(reader.text("parameters"))     #SD1111、Forge
-                if not imgcomment:
-                    imgcomment = str(reader.text("Description"))
-                filetype = 1
-            #文字列部分の改行エスケープを消しておく
-            imgcomment = imgcomment.replace("\"","")
-            imgcomment = imgcomment.replace("\\n", "\n")
+        if not self.currentImage:   return
+        pixmap = QPixmap(self.currentImage)
+        width, height = pixmap.width(), pixmap.height()
+        self.imageWidth, self.imageHeight = width, height
+        reader = QImageReader(self.currentImage)
+        #keys = reader.textKeys()    #keyの一覧を取得
+        comment = "- None -"
+        imgcomment = ""
+        self.filetype = 1   #0:org jpg 1:sd1111 or forge png, 2:comfyUI png, 3:other file
+        #ToDo:改行コードと先頭と終端の扱いがおかしい
+        # jpgでは改行コードが￥￥nの￥nだけで改行してるのと文頭と文末に無駄なキャラがいる
+        # pngではreader.textでキャリッジ・リターンが無視されている感じ？
+        if self.currentImage.lower().endswith(('.jpg', '.jpeg')):
+            imgcomment = str(pvsubfunc.get_jpg_comment(self.currentImage))
+            #自作の変換ツールを通したjpgをImageライブラリで読み込むと不要なバイトなどがあるので修正する
+            imgcomment = pvsubfunc.remove_jpg_comment_Exifbyte(imgcomment)
+            self.filetype = 0   #0:org jpg
+        elif self.currentImage.lower().endswith(('.png')):
+            strs = reader.textKeys()
+            imgcomment = str(reader.text("parameters"))
+            self.filetype = 1   #1:sd1111 or forge png
+            if not imgcomment:
+                imgcomment = str(reader.text("prompt"))
+                self.filetype = 2   #2:comfyUI png
+            if not imgcomment:
+                imgcomment = str(reader.text("Description"))
+                self.filetype = 3   #3:other file
+        if not imgcomment:
+            self.filetype = -1   #-1:no comment
 
-            # 情報を2種類のフォントで表示
-            path_info = f"Path: {self.currentImage}"
-            image_info = f"Size: {width}x{height}px"
-            comment_info = f"{imgcomment}"
-            if imgcomment != '':
-                comment_info = "Prompt: " + comment_info
-                #コピー可能なPrompt情報を退避
-                self.infoSeed = ""
-                res = pvsubfunc.extract_between(comment_info, "Seed: ", ", Size:")
-                if res: self.infoSeed = res[0]
-                self.infoPrompt = ""
-                res = pvsubfunc.extract_between(comment_info, "Prompt: ", "Negative prompt: ")
-                if res:
-                    self.infoPrompt = pvsubfunc.normalize_newlines(res[0], os.linesep) #コピーバッファの改行をOS依存のものに
-                self.infoNegaPrompt = ""
-                res = pvsubfunc.extract_between(comment_info, "Negative prompt: ", "Steps: ")
-                if res:
-                    self.infoNegaPrompt = pvsubfunc.normalize_newlines(res[0], os.linesep) #コピーバッファの改行をOS依存のものに
-                self.infoHighResPrompt = ""
-                res = pvsubfunc.extract_between(comment_info, "Hires prompt: ", "Hires upscale: ")
-                if res:
-                    self.infoHighResPrompt = pvsubfunc.normalize_newlines(res[0], os.linesep) #コピーバッファの改行をOS依存のものに
-                #ウィジェット用の改行に置換、また見やすくするために改行を追加
-                comment_info = html.escape(self.NewLine.join(comment_info.split("\n")))
-                if filetype == 1:
-                    comment_info = comment_info.replace("Negative prompt: ", self.NewLine+"Negative prompt: ")
-                    comment_info = comment_info.replace("Steps: ", self.NewLine+"Steps: ")
-                comment_info = comment_info.replace("Hires prompt: ", self.NewLine+"Hires prompt: ")
-                comment_info = comment_info.replace(", Hires upscale: ", self.NewLine+"Hires upscale: ")
-                #promptを灰色に
-                comment_info = pvsubfunc.insert_between_all(comment_info,
-                                                "Prompt: ", "Negative prompt: ",
-                                                "<span style='color: #CCCCCC;'>", "</span>")
-                #negative promptを紫に
-                comment_info = pvsubfunc.insert_between_all(comment_info,
-                                                "Negative prompt: ", "Steps: ",
-                                                "<span style='color: #CC4488;'>", "</span>")
-                #hires promptを緑に
-                comment_info = pvsubfunc.insert_between_all(comment_info,
-                                                "Hires prompt: ", "Hires upscale: ",
-                                                "<span style='color: #33CC00;'>", "</span>")
-                #SEED番号の強調
-                comment_info = pvsubfunc.insert_between_all(comment_info,
-                                                "Seed: ", ", Size:",
-                                                "<span style='color: #00FFFF; font-size: 14px;'><b>", "</b></span>")
-                #Model名の強調
-                comment_info = pvsubfunc.insert_between_all(comment_info,
-                                                "Model: ", ", VAE",
-                                                "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
-                #Lora部分の強調
-                comment_info = pvsubfunc.insert_between_all(comment_info,
-                                                "&lt;lora:", "&gt;",
-                                                "<span style='color: #FFFF00; font-size: 14px;'><b>", "</b></span>")
-                #各種強調表示
-                for pword in {"ADetailer prompt", "Steps:", "steps:"}:
-                    comment_info = pvsubfunc.add_around_all(comment_info, pword, "<span style='color: #CC4400;'>", "</span>")
-            else:
-                comment_info = comment
+        # 情報を2種類のフォントで表示
+        path_info = f"Path: {self.currentImage}"
+        image_info = f"Size: {width}x{height}px"
+        comment_info = f"{imgcomment}"
 
-            styled_info = f"<span style='color: #008080; font-size: 14px;'>{path_info}</span><br>"
-            styled_info += f"<span style='color: #008000; font-size: 14px;'><b>{image_info}</b></span><br>"
-            styled_info += comment_info
-            self.infoTextEdit.setText(styled_info)
+        self.initCopyInfo()
+
+        #filetype   -1:no comment, 0:org jpg 1:sd1111 or forge png, 2:comfyUI png, 3:other file
+        if self.filetype in {0, 1}:
+            comment_info = self.addTextColorSD(comment_info)
+        elif self.filetype in {2}:
+            comment_info = self.addTextColorComfyUI(comment_info)
+        else:
+            comment_info = comment
+
+        styled_info = f"<span style='color: #008080; font-size: 14px;'>{path_info}</span><br>"
+        styled_info += f"<span style='color: #008000; font-size: 14px;'><b>{image_info}</b></span><br>"
+        styled_info += comment_info
+        self.infoTextEdit.setText(styled_info)
 
     def resizeImage(self):
         if self.currentImage:
@@ -378,17 +424,29 @@ class ImageViewer(QMainWindow):
 
     # コピーバッファ系の処理
     def copyInfoSeed(self):
-        pyperclip.copy(self.infoSeed)
-        self.showStatusBarMes("copied seed.")
+        if self.infoSeed:
+            pyperclip.copy(self.infoSeed)
+            self.showStatusBarMes("copied seed.")
+        else:
+            self.showStatusBarErrorMes("not support - copy seed.")
     def copyInfoPrompt(self):
-        pyperclip.copy(pvsubfunc.normalize_newlines(self.infoPrompt, os.linesep))
-        self.showStatusBarMes("copied prompt.")
+        if self.infoPrompt:
+            pyperclip.copy(pvsubfunc.normalize_newlines(self.infoPrompt, os.linesep))
+            self.showStatusBarMes("copied prompt.")
+        else:
+            self.showStatusBarErrorMes("not support - copy prompt.")
     def copyInfoHighResPrompt(self):
-        pyperclip.copy(pvsubfunc.normalize_newlines(self.infoHighResPrompt, os.linesep))
-        self.showStatusBarMes("copied highres prompt.")
+        if self.infoHighResPrompt:
+            pyperclip.copy(pvsubfunc.normalize_newlines(self.infoHighResPrompt, os.linesep))
+            self.showStatusBarMes("copied highres prompt.")
+        else:
+            self.showStatusBarErrorMes("not support - copy highres prompt.")
     def copyInfoNegaPrompt(self):
-        pyperclip.copy(pvsubfunc.normalize_newlines(self.infoNegaPrompt, os.linesep))
-        self.showStatusBarMes("copied negative prompt.")
+        if self.infoNegaPrompt:
+            pyperclip.copy(pvsubfunc.normalize_newlines(self.infoNegaPrompt, os.linesep))
+            self.showStatusBarMes("copied negative prompt.")
+        else:
+            self.showStatusBarErrorMes("not support - copy negative prompt.")
 
     #コピー処理
     def copyImageFile(self):
