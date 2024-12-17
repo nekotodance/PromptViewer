@@ -85,9 +85,9 @@ Right click : Copy the displayed image to the folder specified by image-fcopy-di
 Double left click : Toggle full screen display (toggle operation)  
 Left drag : Move the window  
 
-2: Copying can be canceled (deleted from the destination) by pressing the key again.  
-3: Move can be canceled by pressing the key again (only possible when not moving from the image).  
-4: ComfyUI output files are not supported.  
+*2: Copying can be canceled (deleted from the destination) by pressing the key again.  
+*3: Move can be canceled by pressing the key again (only possible when not moving from the image).  
+*4: ComfyUI output files are not supported.  
 
 ## Screen Display
 ![PromptViewer-image](docs/PromptViewer-image002.jpg)
