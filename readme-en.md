@@ -65,7 +65,9 @@ sound-move-top : sound when the next image is displayed and the image goes back 
 sound-move-end : sound when the previous image is displayed and the user goes back to the last image.  
 
 ## How to use
-Drag and drop an image file (JPG or PNG file) or a folder containing image files onto the application.
+Drag and drop an image file (JPG or PNG file) or a folder containing image files onto the application.  
+Drag and drop to the shortcut created in step 4) of the installation will also work.  
+Or, you can specify an image file or a folder containing images as an argument when executing Python.  
 
 #### Key operation (If you want to change the assignment, please rewrite the key event processing in the source as you like)
 AD, Left/Right : Move to the next/previous image in the same folder  
