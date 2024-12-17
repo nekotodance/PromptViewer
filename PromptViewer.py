@@ -548,6 +548,7 @@ class ImageViewer(QMainWindow):
     #========================================
     def keyPressEvent(self, event):
         keyid = event.key()
+        pvsubfunc.dbgprint(f"[DBG] keyid : {keyid}")
         #1/2倍表示
         if keyid == Qt.Key_0:
             self.toggleFitScreen(0)
@@ -593,6 +594,7 @@ class ImageViewer(QMainWindow):
 
     #ホイールで前後ファイルに移動
     def wheelEvent(self, event):
+        pvsubfunc.dbgprint(f"[DBG] mouse wheel : {event.angleDelta().y()}")
         if event.angleDelta().y() > 0:
             self.showPreviousImage()
         else:
@@ -613,6 +615,7 @@ class ImageViewer(QMainWindow):
             self.loadFile(filePath)
 
     def mousePressEvent(self, event):
+        pvsubfunc.dbgprint(f"[DBG] mouse button : {event.button()}")
         if event.button() == Qt.LeftButton and not self.fullscreen:
             self.dragging = True
             self.last_pos = event.globalPos()
