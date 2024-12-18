@@ -1,9 +1,22 @@
 ## About PromptViewer
 PromptViewer is a tool designed to easily sort images created with StableDiffusion into a specified folder while checking the prompt information.  
-You can preview and sort images quickly and easily with just a mouse click!  
+With a mouse or keyboard, you can quickly preview and sort with only one hand!  
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
-## How to install
+## How to install (simplified)
+[Download simplified installation zip] https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip
+
+- Extract the zip file
+- Right-click “pv-install.ps1” in the extracted folder and select “Run with PowerShell
+- At the end of the install, it will ask if you want to copy the link to your desktop  
+At the end of the install, it will ask if you want to copy the link to your desktop.  
+Type “y” if you want to, or just press “enter”.  
+If not necessary, type “n” and press “enter  
+- A PromptViewer link will be created.
+
+Double-click on the link file, or drag & drop an image directly into the link file to launch PromptViewer.
+
+## How to install (manually)
 The installation method is explained in the case that the installation folder is C:\tool\git\PromptViewer  
 It is assumed that Python is installed and you have minimum knowledge of Python!  
 

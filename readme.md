@@ -1,12 +1,24 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて
-StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを
-簡易に行うのを目的としたツールです  
-マウスだけでプレビューと振り分けがサクサク出来ます  
+## PromptViewerについて 0.1.0
+StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを簡易に行うのを目的としたツールです  
+マウスもしくはキーボードで、片手だけのプレビューと振り分けがサクサク出来ます  
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
-## インストール方法
+## インストール方法（簡易）
+[簡易インストール版zipのダウンロード] https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip
+
+- zipファイルを解凍
+- 解凍したフォルダ内の「pv-install.ps1」を右クリックして「PowerShellで実行」を選択
+- イントールの最後にデスクトップにリンクをコピーするかどうかを聞いてきます  
+「"Do you want to copy the shortcut to your desktop? (y or enter/n)」  
+必要があれば「y」入力後、もしくはそのまま「enter」キー  
+必要なければ「n」入力後「enter」キー  
+- PromptViewerリンクが作成されます
+
+リンクファイルをダブルクリック、もしくはリンクファイルにそのまま画像をドラッグ＆ドロップして起動できます
+
+## インストール方法（手動）
 インストールフォルダをC:\tool\git\PromptViewerとした場合で説明  
 ！Pythonはインストールされていて最低限の知識はあるものとします！  
 
