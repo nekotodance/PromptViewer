@@ -8,8 +8,8 @@
     "sound-move-top": "PromptViewer_movetop.wav",
     "sound-move-end": "PromptViewer_moveend.wav",
     "info-label-w": 480,
-    "geometry-x": 2306,
-    "geometry-y": 401,
-    "geometry-w": 1080,
-    "geometry-h": 984
+    "geometry-x": 1069,
+    "geometry-y": 556,
+    "geometry-w": 1504,
+    "geometry-h": 1368
 }

@@ -583,8 +583,14 @@ class ImageViewer(QMainWindow):
             self.toggleFullscreen()
         #終了処理
         elif keyid in {Qt.Key_Escape, Qt.Key_Q}:
-            self.exit()
+            self.appexit()
         super().keyPressEvent(event)
+
+    def appexit(self):
+        #全画面を解除してから終了（変な画面サイズが保存されてしまうため）
+        if self.fullscreen:
+            self.toggleFullscreen()
+        self.exit()
 
     #ダブルクリック時に全画面切り替え
     def mouseDoubleClickEvent(self, event):
