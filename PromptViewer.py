@@ -278,8 +278,10 @@ class ImageViewer(QMainWindow):
     #T.B.D きちんと要素判定しないと、文字列の検索だけでは厳しい
     def addTextColorComfyUI(self, comstr):
         comres = comstr
+        comres = comres.replace('\\"', '\"')
+        comres = comres.replace('\\n', '\n')
+        comres = pvsubfunc.normalize_newlines(comres, self.NewLine)
         #promptを灰色に
-        print("{\"inputs\": {\"text\": ")
         comres = pvsubfunc.insert_between_all(comres,
                                         " {\"inputs\": {\"text\": \"", "\",",
                                         "<span style='color: #CCCCCC;'>", "</span>")

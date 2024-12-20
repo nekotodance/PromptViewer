@@ -1,4 +1,4 @@
-## About PromptViewer
+## About PromptViewer 0.1.2
 PromptViewer is a tool designed to easily sort images created with StableDiffusion into a specified folder while checking the prompt information.  
 With a mouse or keyboard, you can quickly preview and sort with only one hand!  
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
@@ -6,15 +6,15 @@ With a mouse or keyboard, you can quickly preview and sort with only one hand!
 ## How to install (simplified)
 [Download simplified installation zip] https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip
 
-- Extract the zip file
-- Right-click “pv-install.ps1” in the extracted folder and select “Run with PowerShell
+- Extract the zip file  
+- Right-click “pv-install.ps1” in the extracted folder and select “Run with PowerShell  
 - At the end of the install, it will ask if you want to copy the link to your desktop  
 At the end of the install, it will ask if you want to copy the link to your desktop.  
 Type “y” if you want to, or just press “enter”.  
 If not necessary, type “n” and press “enter  
-- A PromptViewer link will be created.
+- A PromptViewer link will be created.  
 
-Double-click on the link file, or drag & drop an image directly into the link file to launch PromptViewer.
+Double-click on the link file, or drag & drop an image directly into the link file to launch PromptViewer.  
 
 ## How to install (manually)
 The installation method is explained in the case that the installation folder is C:\tool\git\PromptViewer  
@@ -31,9 +31,9 @@ It is assumed that Python is installed and you have minimum knowledge of Python!
   PromptViewer_movetop.wav  
   pvsubfunc.py  
   
-  PromptViewer_settings.json *1
+  PromptViewer_settings.json *1  
 
-*1:The settings file is automatically created if you do not have one, so it is not necessary.
+*1:The settings file is automatically created if you do not have one, so it is not necessary.  
   
 #### 3) Launch a command prompt and execute the following. This procedure is only once for installation
 ###### 3-1) Move current folder Move
@@ -48,7 +48,7 @@ It is assumed that Python is installed and you have minimum knowledge of Python!
     py PromptViewer.py
     
 ###### 3-5)Change settings
-To change the configuration file, refer to “About the Configuration File”! Refer to “About configuration files” and change image-fcopy-dir and image-fmove-dir!
+To change the configuration file, refer to “About the Configuration File”! Refer to “About configuration files” and change image-fcopy-dir and image-fmove-dir!  
 
 #### 4) Create a convenient shortcut for starting up
   Right-click on the appropriate folder and select “New”->"Shortcut  
@@ -130,3 +130,8 @@ Display of operation status
 - However, copying and coloring of ComfyUI Prompt information is not supported.  
 - Currently, Prompt information does not pick up newline codes well, so there may be a problem with the Image library or the character encoding.  
 - It can display jpg files, but I have only confirmed that it works with the Prompt information from my own tool, which is copied into the Exif tag comment or jpg comment section. In doing so, I have also replaced the line feed code to match the original.  
+
+## Changelog
+- 0.1.2 Added support for coloring and line breaks in the text portion of ComfyUI PNG files (tentative)  
+- 0.1.1 When exiting while in full screen, exit after canceling full screen (to avoid saving strange screen sizes).  
+- 0.1.0 Various fixes, but this is the first version.  
