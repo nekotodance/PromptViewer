@@ -1,6 +1,7 @@
-## About PromptViewer 0.1.2
+## About PromptViewer 0.1.3
 PromptViewer is a tool designed to easily sort images created with StableDiffusion into a specified folder while checking the prompt information.  
-With a mouse or keyboard, you can quickly preview and sort with only one hand!  
+Using a mouse or keyboard, you can quickly and easily preview and sort with only one hand!  
+Supports display of jpg, png, and webp files  
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
 ## How to install (simplified)
@@ -126,12 +127,13 @@ Display the text in different colors and thicknesses as follows
 Display of operation status
 
 ## Notes.
-- Automatic1111, Forge, and ComfyUI output files can be displayed.  
-- However, copying and coloring of ComfyUI Prompt information is not supported.  
-- Currently, Prompt information does not pick up newline codes well, so there may be a problem with the Image library or the character encoding.  
-- It can display jpg files, but I have only confirmed that it works with the Prompt information from my own tool, which is copied into the Exif tag comment or jpg comment section. In doing so, I have also replaced the line feed code to match the original.  
+- We have checked the display in the output files of Automatic1111, Forge, reForge, and ComfyUI*  
+*However, ComfyUI varies from node to node and is not guaranteed to be displayed.)  
+- Currently, line feed codes in the Prompt information are not picked up properly in png files, which may indicate a problem with the Image library or the character encoding.  
+- ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
+- 0.1.3 Support for displaying webp files following jpg and png  
 - 0.1.2 Added support for coloring and line breaks in the text portion of ComfyUI PNG files (tentative)  
 - 0.1.1 When exiting while in full screen, exit after canceling full screen (to avoid saving strange screen sizes).  
 - 0.1.0 Various fixes, but this is the first version.  

@@ -184,7 +184,7 @@ class ImageViewer(QMainWindow):
             return  # 無効な画像の場合は処理しない
         self.currentImage = filePath
         self.imageFolder = os.path.dirname(filePath)
-        self.imageFiles = sorted([f for f in os.listdir(self.imageFolder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
+        self.imageFiles = sorted([f for f in os.listdir(self.imageFolder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))])
         self.updateTitle()
         self.updateInfo()
         self.showStatusBarMes("image loaded.")
@@ -307,7 +307,7 @@ class ImageViewer(QMainWindow):
         #ToDo:改行コードと先頭と終端の扱いがおかしい
         # jpgでは改行コードが￥￥nの￥nだけで改行してるのと文頭と文末に無駄なキャラがいる
         # pngではreader.textでキャリッジ・リターンが無視されている感じ？
-        if self.currentImage.lower().endswith(('.jpg', '.jpeg')):
+        if self.currentImage.lower().endswith(('.jpg', '.jpeg', '.webp')):
             imgcomment = str(pvsubfunc.get_jpg_comment(self.currentImage))
             #自作の変換ツールを通したjpgをImageライブラリで読み込むと不要なバイトなどがあるので修正する
             #imgcomment = pvsubfunc.remove_jpg_comment_Exifbyte(imgcomment)
@@ -535,7 +535,7 @@ class ImageViewer(QMainWindow):
         if os.path.isfile(fname):
             self.loadImage(fname)
         elif os.path.isdir(fname):
-            files = sorted([f for f in os.listdir(fname) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
+            files = sorted([f for f in os.listdir(fname) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))])
             if len(files) > 0:
                 self.loadImage(fname + self.DirSepa + files[0])
             else:
