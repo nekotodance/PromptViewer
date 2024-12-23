@@ -310,8 +310,8 @@ class ImageViewer(QMainWindow):
         if self.currentImage.lower().endswith(('.jpg', '.jpeg')):
             imgcomment = str(pvsubfunc.get_jpg_comment(self.currentImage))
             #自作の変換ツールを通したjpgをImageライブラリで読み込むと不要なバイトなどがあるので修正する
-            imgcomment = pvsubfunc.remove_jpg_comment_Exifbyte(imgcomment)
-            self.filetype = 0   #0:org jpg
+            #imgcomment = pvsubfunc.remove_jpg_comment_Exifbyte(imgcomment)
+            self.filetype = 0   #0:jpg
         elif self.currentImage.lower().endswith(('.png')):
             strs = reader.textKeys()
             imgcomment = str(reader.text("parameters"))

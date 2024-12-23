@@ -190,15 +190,13 @@ def get_jpg_comment(file_path):
 
         # コメントに関連するタグをチェック
         user_comment = exif.get("UserComment")
-        image_description = exif.get("ImageDescription")
-
-        # 優先的にUserCommentを返す
-        if user_comment:
-            return user_comment
-        elif image_description:
-            return image_description
-        else:
-            return None
+        if not user_comment:
+            user_comment = exif.get("ImageDescription")
+        if user_comment.startswith(b'UNICODE\x00'):
+            user_comment = user_comment[len(b'UNICODE\x00'):]
+        user_comment = user_comment.replace(b'\x00', b'')
+        user_comment = user_comment.decode('utf-8')
+        return user_comment
     except Exception as e:
         print(f"エラーが発生しました: {e}")
         return None
