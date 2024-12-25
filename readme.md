@@ -10,7 +10,7 @@ jpg, png, webpファイルの表示をサポートしています
 - 画像とプロンプトのチェックを片手操作で完結
 - Prompt情報やSeed番号のコピー機能により、画像の再生成を支援  
 - 気に入った、修正が必要などの画像振り分け  
-- とにかくシンプルで高速（を目指してます。欲しい機能があれば要望、もしくは自分でカスタイマイズしてください）    
+- とにかくシンプルで高速（を目指してます）    
 
 ## インストール方法（簡易）
 [簡易インストール版zipのダウンロード] https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip
