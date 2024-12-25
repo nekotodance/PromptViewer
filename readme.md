@@ -1,10 +1,16 @@
 [README in English](readme-en.md)
 
 ## PromptViewerについて 0.1.3
-StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを簡易に行うのを目的としたツールです  
-マウスもしくはキーボードを使って、片手だけのプレビューと振り分けがサクサク出来ます  
+StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
+マウスもしくはキーボードで動作します  
 jpg, png, webpファイルの表示をサポートしています  
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
+
+## 特徴
+- 画像とプロンプトのチェックを片手操作で完結
+- Prompt情報やSeed番号のコピー機能により、画像の再生成を支援  
+- 気に入った、修正が必要などの画像振り分け  
+- とにかくシンプルで高速（を目指してます。欲しい機能があれば要望、もしくは自分でカスタイマイズしてください）    
 
 ## インストール方法（簡易）
 [簡易インストール版zipのダウンロード] https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip
