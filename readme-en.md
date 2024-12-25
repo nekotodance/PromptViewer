@@ -1,8 +1,14 @@
 ## About PromptViewer 0.1.3
-PromptViewer is a tool designed to easily sort images created with StableDiffusion into a specified folder while checking the prompt information.  
-Using a mouse or keyboard, you can quickly and easily preview and sort with only one hand!  
-Supports display of jpg, png, and webp files  
+PromptViewer is designed for “one-handed” sorting of images created with StableDiffusion into designated folders while checking prompt information.  
+Works with mouse or keyboard.  
+Supports jpg, png and webp file display. 
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
+
+## Features
+- Complete image and prompt checking with a single hand operation
+Copy Prompt information and Seed number to assist in re-generating images  
+- Sorting of images by liking, modification required, etc.  
+- Anyway, it's simple and fast (I'm aiming for).
 
 ## How to install (simplified)
 [Download simplified installation zip] https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip
