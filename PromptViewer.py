@@ -60,6 +60,7 @@ class ImageViewer(QMainWindow):
         self.setWindowTitle(WINDOW_TITLE)
         self.setStyleSheet("background-color: black;")
 
+        self.setGeometry(0, 0, 600, 640)    #位置とサイズ
         self.setMinimumSize(320 + self.infoLabelWidth, 320)      #最小サイズ（兼デフォルトサイズ）
         #設定ファイルが存在しない場合初期値で作成する
         if not os.path.exists(SETTINGS_FILE):
@@ -84,8 +85,8 @@ class ImageViewer(QMainWindow):
         self.infoTextEdit = QTextEdit()
         font = self.infoTextEdit.font()
         #デフォルトはArial。他にMeiryo UI、Times New Roman、Symbol、メイリオ、Comic Sans MS
-        #等幅フォント一覧：BIZ UDゴシック、BIZ UD明朝、HGｺﾞｼｯｸE、HGｺﾞｼｯｸM、ＭＳ ゴシック、ＭＳ 明朝
-        font.setFamily('ＭＳ ゴシック')
+        #等幅フォント一覧：BIZ UDゴシック、BIZ UD明朝、HGｺﾞｼｯｸE、HGｺﾞｼｯｸM、MS Gothic、ＭＳ 明朝
+        font.setFamily('MS Gothic')
         self.infoTextEdit.setFont(font)
         self.infoTextEdit.setStyleSheet("""
             QTextEdit {
@@ -313,7 +314,6 @@ class ImageViewer(QMainWindow):
             #imgcomment = pvsubfunc.remove_jpg_comment_Exifbyte(imgcomment)
             self.filetype = 0   #0:jpg
         elif self.currentImage.lower().endswith(('.png')):
-            strs = reader.textKeys()
             imgcomment = str(reader.text("parameters"))
             self.filetype = 1   #1:sd1111 or forge png
             if not imgcomment:
@@ -367,8 +367,9 @@ class ImageViewer(QMainWindow):
 
         if self.fitscreen < 0:
             #通常モードからFitモードへ
-            self.screenWidth, self.screenHeight = self.width(), self.height()
             self.fitscreen = scale
+            #現在のウインドウサイズを退避
+            self.screenWidth, self.screenHeight = self.width(), self.height()
             lw, lh = self.imageWidth, self.imageHeight
             if self.fitscreen == 0:
                 lw = int(lw / 2)
@@ -382,6 +383,7 @@ class ImageViewer(QMainWindow):
         else:
             #Fitモードから通常モードへ
             self.fitscreen = -1
+            #元のウインドウサイズに復帰
             self.resize(self.screenWidth, self.screenHeight)
 
     #全画面切り替えトグル
@@ -396,9 +398,12 @@ class ImageViewer(QMainWindow):
             self.statusBar.hide()
             self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
             self.infoTextEdit.setVisible(False)
-        self.show()  # ウィンドウフラグの変更後に再表示が必要
+        self.show()     #ウィジェットが表示/非表示などを切り替える場合など
+        #self.update()   #ウィジェットの内容を更新する場合など
         self.fullscreen = not self.fullscreen
         self.resizeImage()  # ウィンドウサイズ変更時に画像をリサイズ
+        #処理完了を待ちたい場合
+        #QApplication.processEvents()
 
     #次の画像
     def showNextImage(self):
@@ -451,10 +456,10 @@ class ImageViewer(QMainWindow):
             self.showStatusBarErrorMes("not support - copy negative prompt.")
 
     #コピー処理
-    def copyImageFile(self):
+    def copyImageFile(self, destdir):
         if self.currentImage and self.imageFiles:
             srcfile = self.currentImage
-            destdir = self.imageFileCopyDir
+            #destdir = self.imageFileCopyDir
             if not os.path.isfile(srcfile):
                 self.showStatusBarMes(f"not exist file [{srcfile}]")
                 self.play_wave(self.soundBeep)
@@ -512,25 +517,6 @@ class ImageViewer(QMainWindow):
         while sound.isFinished() is False:
             app.processEvents()
 
-    # QTextBoxに食われるキーイベントのフック処理
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.KeyPress:
-            # カーソルキーの判定
-            keyid = event.key()
-            if keyid in {Qt.Key_Up, Qt.Key_Down, Qt.Key_Left, Qt.Key_Right, Qt.Key_Enter, Qt.Key_Return}:
-                if keyid == Qt.Key_Right:
-                    self.showNextImage()
-                elif keyid == Qt.Key_Left:
-                    self.showPreviousImage()
-                elif keyid in {Qt.Key_Enter, Qt.Key_Return}:
-                    self.toggleFullscreen()
-                elif keyid == Qt.Key_Up:
-                    self.copyImageFile()
-                elif keyid == Qt.Key_Down:
-                    self.moveImageFile()
-                return True  # イベントをここで処理したとみなして消費
-        return super().eventFilter(obj, event)
-
     def loadFile(self, fname):
         if os.path.isfile(fname):
             self.loadImage(fname)
@@ -545,8 +531,36 @@ class ImageViewer(QMainWindow):
             self.showStatusBarMes(f"not support file type")
             self.play_wave(self.soundBeep)
 
+
     #========================================
-    #= キーイベント処理
+    #= キーイベント処理（QTextBoxにて消費される分）
+    #= https://doc.qt.io/qt-5/qt.html#Key-enum
+    #========================================
+    # 【重要】カーソルキーなどはkeyPressEventに通知されません。ここに記載してください
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress:
+            # カーソルキーの判定
+            keyid = event.key()
+            if keyid in {Qt.Key_Up, Qt.Key_Down, Qt.Key_Left, Qt.Key_Right, Qt.Key_Enter, Qt.Key_Return}:
+                if keyid == Qt.Key_Right:
+                    self.showNextImage()        #次のイメージへ
+                elif keyid == Qt.Key_Left:
+                    self.showPreviousImage()    #前のイメージへ
+                elif keyid in {Qt.Key_Enter, Qt.Key_Return}:
+                    self.toggleFullscreen()     #全画面切り替え
+                elif keyid == Qt.Key_Up:
+                    self.copyImageFile(self.imageFileCopyDir)        #コピー処理
+                elif keyid == Qt.Key_Down:
+                    self.moveImageFile()        #ムーブ処理
+                    #self.copyImageFile(self.imageFileMoveDir)        #コピー処理２（設定のムーブフォルダへコピー）
+                    #self.showMinimized()        #ウィンドウを最小化
+                    pass
+                return True  # イベントをここで処理したとみなして消費
+        return super().eventFilter(obj, event)
+
+    #========================================
+    #= キーイベント処理（通常）
+    #= https://doc.qt.io/qt-5/qt.html#Key-enum
     #========================================
     def keyPressEvent(self, event):
         keyid = event.key()
@@ -561,11 +575,11 @@ class ImageViewer(QMainWindow):
         elif keyid == Qt.Key_2:
             self.toggleFitScreen(2)
         #次のイメージへ
-        elif keyid in {Qt.Key_Right, Qt.Key_D}:
-            self.showNextImage()
+        elif keyid in {Qt.Key_D}:       #Qt.Key_RightはeventFilter()にて記載
+            self.showNextImage()        #次のイメージへ
         #前のイメージへ
-        elif keyid in {Qt.Key_Left, Qt.Key_A}:
-            self.showPreviousImage()
+        elif keyid in {Qt.Key_A}:       #Qt.Key_LeftはeventFilter()にて記載
+            self.showPreviousImage()    #前のイメージへ
         elif keyid == Qt.Key_K:   #copy seed
             self.copyInfoSeed()
         elif keyid == Qt.Key_P:   #copy prompt
@@ -575,16 +589,19 @@ class ImageViewer(QMainWindow):
         elif keyid == Qt.Key_H:   #copy hires prompt
             self.copyInfoHighResPrompt()
         #ファイルのコピー処理
-        elif keyid in {Qt.Key_Up, Qt.Key_W}:
-            self.copyImageFile()
+        elif keyid in {Qt.Key_W}:       #Qt.Key_UpはeventFilter()にて記載
+            self.copyImageFile(self.imageFileCopyDir)   #コピー処理
         #ファイルのムーブ処理
-        elif keyid in {Qt.Key_Down, Qt.Key_S}:
-            self.moveImageFile()
+        elif keyid in {Qt.Key_S}:       #Qt.Key_DownはeventFilter()にて記載
+            self.moveImageFile()        #ムーブ処理
+            #self.copyImageFile(self.imageFileMoveDir)        #コピー処理２（設定のムーブフォルダへコピー）
+            #self.showMinimized()        #ウィンドウを最小化
         #全画面切り替え
-        elif keyid in {Qt.Key_Enter, Qt.Key_Return}:
-            self.toggleFullscreen()
+        #Qt.Key_Enter, Qt.Key_ReturnはeventFilter()にて記載
+        #elif keyid in {Qt.Key_Enter, Qt.Key_Return}:
+        #    self.toggleFullscreen()
         #終了処理
-        elif keyid in {Qt.Key_Escape, Qt.Key_Q}:
+        elif keyid in {Qt.Key_Escape, Qt.Key_Q, Qt.Key_Slash, Qt.Key_Backslash}:
             self.appexit()
         super().keyPressEvent(event)
 
@@ -628,7 +645,7 @@ class ImageViewer(QMainWindow):
             self.dragging = True
             self.last_pos = event.globalPos()
         elif event.button() == Qt.RightButton:
-            self.copyImageFile()
+            self.copyImageFile(self.imageFileCopyDir)        #コピー処理
 
     def mouseMoveEvent(self, event):
         if self.dragging:
