@@ -55,7 +55,6 @@ class ImageViewer(QMainWindow):
         self.filetype = -1     #-1:no comment, 0:org jpg 1:sd1111 or forge png, 2:comfyUI png, 3:other file
 
         self.NewLine = '\u2029'
-        self.DirSepa = "/"
         self.pydir = os.path.dirname(os.path.abspath(__file__))
         self.setWindowTitle(WINDOW_TITLE)
         self.setStyleSheet("background-color: black;")
@@ -199,8 +198,8 @@ class ImageViewer(QMainWindow):
             totalFiles = len(self.imageFiles)
             filecountlen = len(str(totalFiles))
             pos = str(currentIndex).rjust(filecountlen, "0")
-            fileName = os.path.basename(self.currentImage)
-            wt = f"[{pos}/{totalFiles}] {self.imageFolder}{self.DirSepa}{fileName}"
+            fileName = os.path.join(self.imageFolder, os.path.basename(self.currentImage)).replace("\\", "/")
+            wt = f"[{pos}/{totalFiles}] {fileName}"
         else:
             wt = WINDOW_TITLE
         self.setWindowTitle(wt)
@@ -410,7 +409,7 @@ class ImageViewer(QMainWindow):
         if self.currentImage and self.imageFiles:
             currentIndex = self.imageFiles.index(os.path.basename(self.currentImage))
             nextIndex = (currentIndex + 1) % len(self.imageFiles)
-            self.loadImage(self.imageFolder + self.DirSepa + self.imageFiles[nextIndex])
+            self.loadImage(os.path.join(self.imageFolder, self.imageFiles[nextIndex]).replace("\\", "/"))
             if nextIndex == 0:
                 self.showStatusBarMes("first file")
                 self.play_wave(self.soundMoveTop)
@@ -422,7 +421,7 @@ class ImageViewer(QMainWindow):
         if self.currentImage and self.imageFiles:
             currentIndex = self.imageFiles.index(os.path.basename(self.currentImage))
             prevIndex = (currentIndex - 1) % len(self.imageFiles)
-            self.loadImage(self.imageFolder + self.DirSepa +  self.imageFiles[prevIndex])
+            self.loadImage(os.path.join(self.imageFolder, self.imageFiles[prevIndex]).replace("\\", "/"))
             if prevIndex == len(self.imageFiles)-1:
                 self.showStatusBarMes("last file")
                 self.play_wave(self.soundMoveEnd)
@@ -469,7 +468,7 @@ class ImageViewer(QMainWindow):
                 self.play_wave(self.soundBeep)
                 return
 
-            dest_file = os.path.join(destdir, os.path.basename(srcfile))
+            dest_file = os.path.join(destdir, os.path.basename(srcfile)).replace("\\", "/")
 
             # コピー先に同名のファイルがすでに存在していれば削除のみ実行
             if os.path.exists(dest_file):
@@ -487,7 +486,7 @@ class ImageViewer(QMainWindow):
         if self.currentImage and self.imageFiles:
             srcfile = self.currentImage
             destdir = self.imageFileMoveDir
-            dest_file = os.path.join(destdir, os.path.basename(srcfile))
+            dest_file = os.path.join(destdir, os.path.basename(srcfile)).replace("\\", "/")
 
             if not os.path.isdir(destdir):
                 self.showStatusBarMes(f"not exist dir [{destdir}]")
@@ -510,7 +509,7 @@ class ImageViewer(QMainWindow):
             self.play_wave(self.soundFileMoveOK)
 
     def play_wave(self, file_name):
-        file_path = os.path.join(self.pydir, file_name)
+        file_path = os.path.join(self.pydir, file_name).replace("\\", "/")
         if not os.path.isfile(file_path): return
         sound = QSound(file_path)
         sound.play()
@@ -523,7 +522,7 @@ class ImageViewer(QMainWindow):
         elif os.path.isdir(fname):
             files = sorted([f for f in os.listdir(fname) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))])
             if len(files) > 0:
-                self.loadImage(fname + self.DirSepa + files[0])
+                self.loadImage(os.path.join(fname, files[0]).replace("\\", "/"))
             else:
                 self.showStatusBarMes(f"no image files in this folder")
                 self.play_wave(self.soundBeep)
