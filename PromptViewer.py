@@ -368,17 +368,17 @@ class ImageViewer(QMainWindow):
             #通常モードからFitモードへ
             self.fitscreen = scale
             #現在のウインドウサイズを退避
-            self.screenWidth, self.screenHeight = self.width(), self.height()
+            self.screenWidth, self.screenHeight = self.centralWidget.width(), self.centralWidget.height()
             lw, lh = self.imageWidth, self.imageHeight
             if self.fitscreen == 0:
-                lw = int(lw / 2)
-                lh = int(lh / 2)
-            if self.fitscreen == 2:
+                lw = lw // 2    # //で割り算を行うことで一般的なintの割り算（切り捨て動作になる）
+                lh = lh // 2
+            elif self.fitscreen == 2:
                 lw = lw * 2
                 lh = lh * 2
 
             lw += self.infoLabelWidth
-            self.resize(lw, lh + 24)
+            self.resize(lw, lh)    #selfのサイズではなくcentralWidgetのサイズを使うことで不要な補正は削除
         else:
             #Fitモードから通常モードへ
             self.fitscreen = -1
