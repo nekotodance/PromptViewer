@@ -1,4 +1,4 @@
-## About PromptViewer 0.1.4
+## About PromptViewer 0.1.5
 PromptViewer is designed for “one-handed” sorting of images created with StableDiffusion into designated folders while checking prompt information.  
 Works with mouse or keyboard.  
 Supports jpg, png and webp file display. 
@@ -139,6 +139,7 @@ Display of operation status
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
+- 0.1.5 Fixed incorrect sizes for equal, 2x, and 1/2x displays.  
 - 0.1.4 No functional changes, added comments to make customization of keys and functions easier.  
 - 0.1.3 Support for displaying webp files following jpg and png  
 - 0.1.2 Added support for coloring and line breaks in the text portion of ComfyUI PNG files (tentative)  

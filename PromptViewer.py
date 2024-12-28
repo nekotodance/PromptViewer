@@ -368,8 +368,10 @@ class ImageViewer(QMainWindow):
             #通常モードからFitモードへ
             self.fitscreen = scale
             #現在のウインドウサイズを退避
-            self.screenWidth, self.screenHeight = self.centralWidget.width(), self.centralWidget.height()
-            lw, lh = self.imageWidth, self.imageHeight
+            self.screenWidth, self.screenHeight = self.width(), self.height()
+            lw, lh = self.imageWidth, self.imageHeight  # 画像のサイズ
+            # Widghetの領域とウインドウの領域の差分を算出
+            correct_height = self.screenHeight - self.centralWidget.height()
             if self.fitscreen == 0:
                 lw = lw // 2    # //で割り算を行うことで一般的なintの割り算（切り捨て動作になる）
                 lh = lh // 2
@@ -377,8 +379,9 @@ class ImageViewer(QMainWindow):
                 lw = lw * 2
                 lh = lh * 2
 
-            lw += self.infoLabelWidth
-            self.resize(lw, lh)    #selfのサイズではなくcentralWidgetのサイズを使うことで不要な補正は削除
+            lw += self.infoLabelWidth   # Prompt情報分の幅を追加
+            lh += correct_height        # Widghetの領域とウインドウの領域の差分を追加
+            self.resize(lw, lh)
         else:
             #Fitモードから通常モードへ
             self.fitscreen = -1
