@@ -348,7 +348,7 @@ class ImageViewer(QMainWindow):
         if self.currentImage:
             pixmap = QPixmap(self.currentImage)
             # 情報表示を考慮した拡大縮小を行う
-            imgsize = self.size()
+            imgsize = self.centralWidget.size()
             if self.fullscreen == False:
                 imgsize.setWidth(imgsize.width() - self.infoLabelWidth)
             self.imageLabel.setPixmap(pixmap.scaled(imgsize, Qt.KeepAspectRatio, Qt.SmoothTransformation))
