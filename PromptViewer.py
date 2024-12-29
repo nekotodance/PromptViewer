@@ -31,6 +31,7 @@ GEOMETRY_X = "geometry-x"
 GEOMETRY_Y = "geometry-y"
 GEOMETRY_W = "geometry-w"
 GEOMETRY_H = "geometry-h"
+SUPPORT_EXT = [".png", ".jpg", ".jpeg", ".webp"]
 
 class ImageViewer(QMainWindow):
     def __init__(self):
@@ -639,6 +640,9 @@ class ImageViewer(QMainWindow):
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
             filePath = event.mimeData().urls()[0].toLocalFile()
+            if os.path.isfile(filePath):
+                if not any(filePath.lower().endswith(ext) for ext in SUPPORT_EXT):
+                    return
             self.loadFile(filePath)
 
     def mousePressEvent(self, event):
