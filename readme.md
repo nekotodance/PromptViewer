@@ -1,95 +1,68 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.1.5
+## PromptViewerについて 0.1.6
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
-jpg, png, webpファイルの表示をサポートしています  
+jpg, png, webp, avifファイルの表示をサポートしています  
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
 ## 特徴
 - 画像とプロンプトのチェックを片手操作で完結
 - Prompt情報やSeed番号のコピー機能により、画像の再生成を支援  
 - 気に入った、修正が必要などの画像振り分け  
-- とにかくシンプルで高速（を目指してます）    
+- とにかくシンプルで高速（を目指してます）  
 
 ## インストール方法（簡易）
-[簡易インストール版zipのダウンロード] https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip
+[簡易インストール版zipのダウンロード]  
+    https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip  
 
-- zipファイルを解凍
-- 解凍したフォルダ内の「pv-install.ps1」を右クリックして「PowerShellで実行」を選択
+- Pythonのインストール（SD標準の3.10.6推奨）  
+- zipファイルを解凍  
+- 解凍したフォルダ内の「pv-install.ps1」を右クリックして「PowerShellで実行」を選択  
 - イントールの最後にデスクトップにリンクをコピーするかどうかを聞いてきます  
 「"Do you want to copy the shortcut to your desktop? (y or enter/n)」  
 必要があれば「y」入力後、もしくはそのまま「enter」キー  
 必要なければ「n」入力後「enter」キー  
 - PromptViewerリンクが作成されます
-
-リンクファイルをダブルクリック、もしくはリンクファイルにそのまま画像をドラッグ＆ドロップして起動できます
+- 設定の変更  
+！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと！  
 
 ## インストール方法（手動）
-インストールフォルダをC:\tool\git\PromptViewerとした場合で説明  
-！Pythonはインストールされていて最低限の知識はあるものとします！  
-
-#### 1)C:\tool\git\PromptViewerを作成
-#### 2)以下のファイルを格納
-  PromptViewer.py  
-  PromptViewer_beep.wav  
-  PromptViewer_filecansel.wav  
-  PromptViewer_filecopyok.wav  
-  PromptViewer_filemoveok.wav  
-  PromptViewer_moveend.wav  
-  PromptViewer_movetop.wav  
-  pvsubfunc.py  
-  
-  PromptViewer_settings.json    ※1
-
-※1:設定ファイルはなければ自動で作成されるのでなくても良い
-  
-#### 3)コマンドプロンプトを立ち上げて以下を実行する。この手順はインストールの一度のみ
-###### 3-1)カレントフォルダの移動移動
-    c:
-    cd C:\tool\git\PromptViewer
-###### 3-2)venv環境を作成、activate
-    py -m venv venv
-    .\venv\Scripts\activate.bat
-###### 3-3)利用するライブラリをインストール
-    pip install PyQt5 pyperclip Image
-###### 3-4)動作確認
-    py PromptViewer.py
-    
-###### 3-5)設定の変更
-！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと！
-
-#### 4)起動に便利なショートカットの作成
-  適当なフォルダで右クリックして「新規作成」->「ショートカット」  
-「項目の場所を...」に以下を入力
-  C:\tool\git\PromptViewer\Scripts\pythonw.exe C:\tool\git\PromptViewer\PromptViewer.py  
-  
-  今後は作成したショートカットをダブルクリックでアプリのように使えます  
-  またこのショートカットにファイル（もしくは画像を格納したフォルダ）をドラッグ＆ドロップも可能  
+- Pythonのインストール（SD標準の3.10.6推奨）  
+- gitのインストール  
+- git cloneでリポジトリを取得  
+    https://github.com/nekotodance/PromptViewer.git  
+- シェルスクリプトの実行（右クリックして「PowerShellで実行」を選択）  
+    pv-install.ps1  
+- リンクファイルのダブルクリック、もしくは画像ファイル、フォルダをドラッグ＆ドロップ  
+    PromptViewer.lnk  
+- 設定の変更  
+！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと！  
 
 ## 設定ファイルについて
 PromptViewer_settings.jsonに以下の情報を保持しています  
 ！特にimage-fcopy-dir、image-fmove-dirは【自分の環境に合わせて必ず】書き換えてください！  
 
-image-fcopy-dir   : W,上キーによるファイルのコピー先フォルダ名  
-image-fmove-dir   : S,下キーによるファイルのムーブ先フォルダ名（こちらはファイルの移動となるので注意）  
+- コピー、ムーブ先のディレクトリ設定
+  - image-fcopy-dir   : W,上キーによるファイルのコピー先フォルダ名  
+  - image-fmove-dir   : S,下キーによるファイルのムーブ先フォルダ名（こちらはファイルの移動となるので注意）  
+- 画面の表示に関する設定
+  - info-label-w      : Prompt表示領域の横幅(デフォルト値:480)  
+  - geometry-x,y      : 最後のウインドウ表示位置  
+  - geometry-w,h      : 最後のウインドウ表示サイズ  
 
-info-label-w      : Prompt表示領域の横幅(デフォルト値:480)  
-geometry-x,y      : 最後のウインドウ表示位置  
-geometry-w,h      : 最後のウインドウ表示サイズ  
-
-以下は効果音となります（WAVEファイルを好きなものに変更可能です、試してませんが）  
-sound-beep        : 処理失敗時のエラーオン  
-sound-fcopy-ok    : コピー成功時の音  
-sound-fmove-ok    : ムーブ成功時の音  
-sound-f-cansel    : コピー、ムーブのキャンセル時の音  
-sound-move-top    : 次の画像表示時に、一廻りして最初の画像に戻った時の音  
-sound-move-end    : 前の画像表示時に、一廻りして最後の画像に戻った時の音  
+- 効果音設定（WAVEファイルを好きなものに変更可能です、試してませんが）  
+  - sound-beep        : 処理失敗時のエラーオン  
+  - sound-fcopy-ok    : コピー成功時の音  
+  - sound-fmove-ok    : ムーブ成功時の音  
+  - sound-f-cansel    : コピー、ムーブのキャンセル時の音  
+  - sound-move-top    : 次の画像表示時に、一廻りして最初の画像に戻った時の音  
+  - sound-move-end    : 前の画像表示時に、一廻りして最後の画像に戻った時の音  
 
 ## 利用方法
 アプリ上に画像ファイル（JPGかPNGファイル）、もしくは画像ファイルが入ったフォルダをドラッグ＆ドロップしてください  
-インストールの4)で作成したショートカットにドラッグ＆ドロップでも動作します  
-またはPython実行時の引数に画像ファイルか画像が入ったフォルダをしていしてください  
+リンクファイルへのドラッグ＆ドロップでも動作します  
+またはPython実行時の引数に画像ファイルか画像が入ったフォルダを指定してください  
 
 #### キー操作（割当を変えたい人はソースのキーイベント処理を好きに書き換えてください）
 AD,左右   : 同じフォルダ内の前後の画像に移動  
@@ -113,7 +86,7 @@ H         : Hires Prompt文字列をコピーバッファへ ※4
 ※3:ムーブは再度キーを押すことで取り消し出来ます（画像から移動していない場合のみ可能）  
 ※4:ComfyUIの出力ファイルには対応していません  
 
-## 画面表示
+## 画面の表示内容
 ![PromptViewer-image](docs/PromptViewer-image002.jpg)
 
 #### Window Title
@@ -136,11 +109,13 @@ H         : Hires Prompt文字列をコピーバッファへ ※4
 
 ## 注意事項
 - Automatic1111、Forge、reForge、ComfyUIの出力ファイルで表示を確認しています  
-（ただしComfyUIはノードにより異なるため表示を保証するものではありません）  
+（ただしComfyUIはノードによりPrompt出力内容が異なるため動作は保証しません）  
+- AVIFはAutomatic1111の出力ファイルでのみ表示を確認しています  
 - 現状はpngファイルの場合、Prompt情報の中の改行コードがうまく拾えていません。Imageライブラリの利用方法か、文字コードの指定に問題があるかもしれません  
 - ComfyUIのPrompt情報のコピーや色付けには対応していません  
 
 ## 変更履歴
+- 0.1.6 avifファイルの表示に対応、readmeの見直し  
 - 0.1.5 等倍、2倍、1/2倍表示、ウインドウサイズ変更時に画像サイズが間違っていたのを修正  
 - 0.1.4 機能的には変更なし、キーや機能のカスタマイズが楽になるようなコメントを追記  
 - 0.1.3 jpg,pngに続きwebpファイルの表示に対応  

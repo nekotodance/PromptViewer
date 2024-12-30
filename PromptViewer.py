@@ -3,12 +3,14 @@ import os
 import json
 import shutil
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QTextEdit, QVBoxLayout, QWidget, QStatusBar, QHBoxLayout
-from PyQt5.QtGui import QPixmap, QImageReader
+from PyQt5.QtGui import QPixmap, QImageReader, QImage
 from PyQt5.QtCore import Qt, QEvent, QRect
 from PyQt5.QtMultimedia import QSound
 import html
 import pyperclip
 import pvsubfunc
+import sdfileUtility
+from PIL import Image
 
 # 引数取得
 args = sys.argv
@@ -31,7 +33,7 @@ GEOMETRY_X = "geometry-x"
 GEOMETRY_Y = "geometry-y"
 GEOMETRY_W = "geometry-w"
 GEOMETRY_H = "geometry-h"
-SUPPORT_EXT = [".png", ".jpg", ".jpeg", ".webp"]
+SUPPORT_EXT = (".png", ".jpg", ".jpeg", ".webp", ".avif")
 
 class ImageViewer(QMainWindow):
     def __init__(self):
@@ -53,7 +55,7 @@ class ImageViewer(QMainWindow):
         self.soundMoveTop = ""
         self.soundMoveEnd = ""
         self.infoLabelWidth = 480
-        self.filetype = -1     #-1:no comment, 0:org jpg 1:sd1111 or forge png, 2:comfyUI png, 3:other file
+        self.filetype = -1     #-1:no comment, 0:org jpg,webp,avif 1:sd1111 or forge png, 2:comfyUI png, 3:other file
 
         self.NewLine = '\u2029'
         self.pydir = os.path.dirname(os.path.abspath(__file__))
@@ -178,14 +180,14 @@ class ImageViewer(QMainWindow):
             self.close()
 
     def loadImage(self, filePath):
-        pixmap = QPixmap(filePath)
-        if pixmap.isNull():
+        pixmap = self.loadImageToQPixmapFromFile(filePath)
+        if not pixmap:
             self.showStatusBarMes("not supprt file.")
             self.play_wave(self.soundBeep)
             return  # 無効な画像の場合は処理しない
         self.currentImage = filePath
         self.imageFolder = os.path.dirname(filePath)
-        self.imageFiles = sorted([f for f in os.listdir(self.imageFolder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))])
+        self.imageFiles = sorted([f for f in os.listdir(self.imageFolder) if f.lower().endswith(SUPPORT_EXT)])
         self.updateTitle()
         self.updateInfo()
         self.showStatusBarMes("image loaded.")
@@ -295,27 +297,46 @@ class ImageViewer(QMainWindow):
             comres = pvsubfunc.add_around_all(comres, pword, "<span style='color: #CC4400;'>", "</span>")
         return comres
 
+    def loadImageToQPixmapFromFile(self, file):
+        fn, ext = os.path.splitext(file)
+        try:
+            if ext.lower() in (".jpg", ".webp", ".png"):
+                pixmap = QPixmap(file)
+            elif ext.lower() in (".avif"):
+                img = Image.open(file)
+                img = img.convert("RGBA")  # Ensure the image is in RGBA format
+                data = img.tobytes("raw", "RGBA")
+                qimage = QImage(data, img.width, img.height, QImage.Format_RGBA8888)
+
+                # Display the image in QLabel
+                pixmap = QPixmap.fromImage(qimage)
+                pass
+            else:
+                print(f"not support image file type : {ext}")
+                return None
+        except Exception as e:
+            self.image_label.setText(f"Failed to load image: {file}. {e}")
+            return None
+        return pixmap
+
+
     def updateInfo(self):
         if not self.currentImage:   return
-        pixmap = QPixmap(self.currentImage)
+        pixmap = self.loadImageToQPixmapFromFile(self.currentImage)
         width, height = pixmap.width(), pixmap.height()
         self.imageWidth, self.imageHeight = width, height
-        reader = QImageReader(self.currentImage)
-        #keys = reader.textKeys()    #keyの一覧を取得
         comment = "- None -"
         imgcomment = ""
         self.filetype = 1   #0:org jpg 1:sd1111 or forge png, 2:comfyUI png, 3:other file
-        #ToDo:改行コードと先頭と終端の扱いがおかしい
-        # jpgでは改行コードが￥￥nの￥nだけで改行してるのと文頭と文末に無駄なキャラがいる
+        #ToDo:改行コードの扱いがおかしい
         # pngではreader.textでキャリッジ・リターンが無視されている感じ？
-        if self.currentImage.lower().endswith(('.jpg', '.jpeg', '.webp')):
-            imgcomment = str(pvsubfunc.get_jpg_comment(self.currentImage))
-            #自作の変換ツールを通したjpgをImageライブラリで読み込むと不要なバイトなどがあるので修正する
-            #imgcomment = pvsubfunc.remove_jpg_comment_Exifbyte(imgcomment)
-            self.filetype = 0   #0:jpg
+        imgcomment = sdfileUtility.get_prompt_from_imgfile(self.currentImage)
+        if self.currentImage.lower().endswith(('.jpg', '.jpeg', '.webp', '.avif')):
+            self.filetype = 0   #0:jpg, webp, avif
         elif self.currentImage.lower().endswith(('.png')):
-            imgcomment = str(reader.text("parameters"))
             self.filetype = 1   #1:sd1111 or forge png
+            reader = QImageReader(self.currentImage)
+            #keys = reader.textKeys()    #keyの一覧を取得
             if not imgcomment:
                 imgcomment = str(reader.text("prompt"))
                 self.filetype = 2   #2:comfyUI png
@@ -347,7 +368,7 @@ class ImageViewer(QMainWindow):
 
     def resizeImage(self):
         if self.currentImage:
-            pixmap = QPixmap(self.currentImage)
+            pixmap = self.loadImageToQPixmapFromFile(self.currentImage)
             # 情報表示を考慮した拡大縮小を行う
             imgsize = self.centralWidget.size()
             if self.fullscreen == False:
@@ -524,7 +545,7 @@ class ImageViewer(QMainWindow):
         if os.path.isfile(fname):
             self.loadImage(fname)
         elif os.path.isdir(fname):
-            files = sorted([f for f in os.listdir(fname) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))])
+            files = sorted([f for f in os.listdir(fname) if f.lower().endswith(SUPPORT_EXT)])
             if len(files) > 0:
                 self.loadImage(os.path.join(fname, files[0]).replace("\\", "/"))
             else:

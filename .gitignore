@@ -1,5 +1,7 @@
 PromptViewer.lnk
 PromptViewer-image.xcf
+PromptViewer_settings.json
+venv/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
