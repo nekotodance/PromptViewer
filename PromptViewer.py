@@ -3,7 +3,7 @@ import os
 import json
 import shutil
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QTextEdit, QVBoxLayout, QWidget, QStatusBar, QHBoxLayout
-from PyQt5.QtGui import QPixmap, QImageReader, QImage
+from PyQt5.QtGui import QPixmap, QImageReader, QImage, QIcon
 from PyQt5.QtCore import Qt, QEvent, QRect
 from PyQt5.QtMultimedia import QSound
 import html
@@ -124,6 +124,9 @@ class ImageViewer(QMainWindow):
         self.infoNegaPrompt = ""
         self.infoHighResPrompt = ""
         self.infoSeed = ""
+
+        # アプリ左上のアイコンを設定
+        self.setWindowIcon(QIcon("res/PromptViewer.ico"))
 
         # ドラッグ＆ドロップ有効化
         self.setAcceptDrops(True)
