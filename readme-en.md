@@ -1,4 +1,4 @@
-## About PromptViewer 0.1.6
+## About PromptViewer 0.1.7
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file display  
@@ -114,6 +114,7 @@ Display of operation status
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
+- 0.1.7 App icon settings
 - 0.1.6 Added support for displaying avif files, revised readme  
 - 0.1.5 Fixed wrong image size when displaying equal size, 2x, 1/2x, and resizing window  
 - 0.1.4 No functional changes, added comments to make customizing keys and functions easier  
