@@ -1,6 +1,6 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.1.8
+## PromptViewerについて 0.1.9
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイルの表示をサポートしています  
@@ -87,6 +87,7 @@ H         : Hires Prompt文字列をコピーバッファへ ※4
 ※4:ComfyUIの出力ファイルには対応していません  
 
 ## 画面の表示内容
+ForgeやA1111の場合のPrompt表示イメージ  
 ![PromptViewer-image](docs/PromptViewer-image002.jpg)
 
 #### Window Title
@@ -103,6 +104,8 @@ H         : Hires Prompt文字列をコピーバッファへ ※4
 - 橙色 : 文字を着色 ADetailer prompt、Steps:、steps:  
 
 ※ComfyUIの出力ファイルには部分的にしか対応していません  
+ComfyUIの場合のPrompt表示イメージ  
+![PromptViewer-image](docs/PromptViewer-image003.jpg)
 
 #### Status Bar
 動作状況の表示
@@ -115,6 +118,7 @@ H         : Hires Prompt文字列をコピーバッファへ ※4
 - ComfyUIのPrompt情報のコピーや色付けには対応していません  
 
 ## 変更履歴
+- 0.1.9 ComfyUIファイルのPrompt強調を追加  
 - 0.1.8 ComfyUIファイルの判定方法を修正  
 - 0.1.7 アプリアイコンの設定  
 - 0.1.6 avifファイルの表示に対応、readmeの見直し  

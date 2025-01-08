@@ -296,7 +296,7 @@ class ImageViewer(QMainWindow):
                                         "{\"lora_name\": \"", "\",",
                                         "<span style='color: #FFFF00; font-size: 14px;'><b>", "</b></span>")
         #各種強調表示
-        for pword in {"seed:", "Steps:", "steps:"}:
+        for pword in {"seed:", "Steps:", "steps:", "\"steps\"", "\"noise_seed\""}:
             comres = pvsubfunc.add_around_all(comres, pword, "<span style='color: #CC4400;'>", "</span>")
         return comres
 

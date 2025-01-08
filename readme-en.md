@@ -1,4 +1,4 @@
-## About PromptViewer 0.1.8
+## About PromptViewer 0.1.9
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file display  
@@ -86,6 +86,7 @@ Left drag : Move the window
 4:ComfyUI output files are not supported.  
 
 ## Screen display contents
+Prompt display image for Forge and A1111  
 ![PromptViewer-image](docs/PromptViewer-image002.jpg)
 
 #### Window Title
@@ -101,7 +102,9 @@ Display the text in different colors and thicknesses as follows
 - Bold orange : Model name  
 - Orange : Colorize text ADetailer prompt, Steps:, steps:  
 
-ComfyUI output files are only partially supported.  
+*ComfyUI output files are only partially supported.  
+Prompt display image in case of ComfyUI  
+![PromptViewer-image](docs/PromptViewer-image003.jpg)
 
 #### Status Bar
 Display of operation status
@@ -114,6 +117,7 @@ Display of operation status
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
+- 0.1.9 Added Prompt emphasis for ComfyUI files  
 - 0.1.8 Corrected the method of determining ComfyUI files  
 - 0.1.7 App icon settings  
 - 0.1.6 Added support for displaying avif files, revised readme  
