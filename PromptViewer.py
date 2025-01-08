@@ -334,20 +334,19 @@ class ImageViewer(QMainWindow):
         #ToDo:改行コードの扱いがおかしい
         # pngではreader.textでキャリッジ・リターンが無視されている感じ？
         imgcomment = sdfileUtility.get_prompt_from_imgfile(self.currentImage)
-        if self.currentImage.lower().endswith(('.jpg', '.jpeg', '.webp', '.avif')):
-            self.filetype = 0   #0:jpg, webp, avif
-        elif self.currentImage.lower().endswith(('.png')):
-            self.filetype = 1   #1:sd1111 or forge png
+        if imgcomment and imgcomment != "":
+            self.filetype = 1
+            if imgcomment.count("inputs") > 3:
+                self.filetype = 2
+        else:
+            self.filetype = 3   #3:other file
             reader = QImageReader(self.currentImage)
-            #keys = reader.textKeys()    #keyの一覧を取得
-            if not imgcomment:
-                imgcomment = str(reader.text("prompt"))
-                self.filetype = 2   #2:comfyUI png
-            if not imgcomment:
+            imgcomment = str(reader.text("prompt"))
+            if not imgcomment or imgcomment == "":
                 imgcomment = str(reader.text("Description"))
-                self.filetype = 3   #3:other file
         if not imgcomment:
-            self.filetype = -1   #-1:no comment
+            self.filetype = -1
+        pvsubfunc.dbgprint(f"filetype = {self.filetype}")
 
         # 情報を2種類のフォントで表示
         path_info = f"Path: {self.currentImage}"
