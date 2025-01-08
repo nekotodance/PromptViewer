@@ -117,7 +117,7 @@ Display of operation status
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
-- 0.1.9 Added Prompt emphasis for ComfyUI files  
+- 0.1.9 Added Prompt emphasis for ComfyUI files, etc.  
 - 0.1.8 Corrected the method of determining ComfyUI files  
 - 0.1.7 App icon settings  
 - 0.1.6 Added support for displaying avif files, revised readme  

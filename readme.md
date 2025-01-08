@@ -118,7 +118,7 @@ ComfyUIの場合のPrompt表示イメージ
 - ComfyUIのPrompt情報のコピーや色付けには対応していません  
 
 ## 変更履歴
-- 0.1.9 ComfyUIファイルのPrompt強調を追加  
+- 0.1.9 ComfyUIファイルのPrompt強調を追加など  
 - 0.1.8 ComfyUIファイルの判定方法を修正  
 - 0.1.7 アプリアイコンの設定  
 - 0.1.6 avifファイルの表示に対応、readmeの見直し  

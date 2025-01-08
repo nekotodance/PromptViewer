@@ -245,10 +245,6 @@ class ImageViewer(QMainWindow):
 
         #ウィジェット用のHTMLエスケープ、改行の加工
         comres = html.escape(pvsubfunc.normalize_newlines(comres, self.NewLine))
-        #ウィジェット用に見やすくするための改行を追加
-        if self.filetype == 1:      #-1:no comment, 0:org jpg 1:sd1111 or forge png, 2:comfyUI png, 3:other file
-            comres = comres.replace("Negative prompt: ", self.NewLine+"Negative prompt: ")
-            comres = comres.replace("Steps: ", self.NewLine+"Steps: ")
         comres = comres.replace("Hires prompt: ", self.NewLine+"Hires prompt: ")
         comres = comres.replace(", Hires upscale: ", self.NewLine+"Hires upscale: ")
         #promptを灰色に
