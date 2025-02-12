@@ -4,13 +4,15 @@ import json
 import shutil
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QTextEdit, QVBoxLayout, QWidget, QStatusBar, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImageReader, QImage, QIcon
-from PyQt5.QtCore import Qt, QEvent, QRect
+from PyQt5.QtCore import Qt, QEvent, QRect, QByteArray
 from PyQt5.QtMultimedia import QSound
 import html
 import pyperclip
 import pvsubfunc
 import sdfileUtility
 from PIL import Image
+import zipfile
+import io, time
 
 # 引数取得
 args = sys.argv
@@ -56,6 +58,11 @@ class ImageViewer(QMainWindow):
         self.soundMoveEnd = ""
         self.infoLabelWidth = 480
         self.filetype = -1     #-1:no comment, 0:org jpg,webp,avif 1:sd1111 or forge png, 2:comfyUI png, 3:other file
+        #zipファイル対応
+        self.zip_fname = ""     #zipファイル名
+        self.zip_data = None    #zipデータ
+        self.zip_files = ""     #zip内の画像ファイルリスト
+        self.zip_index = 0      #zip内の表示画像index
 
         self.NewLine = '\u2029'
         self.pydir = os.path.dirname(os.path.abspath(__file__))
@@ -183,10 +190,10 @@ class ImageViewer(QMainWindow):
             self.close()
 
     def loadImage(self, filePath):
+        self.currentImage = ""
         pixmap = self.loadImageToQPixmapFromFile(filePath)
         if not pixmap:
-            self.showStatusBarMes("not supprt file.")
-            self.play_wave(self.soundBeep)
+            self.showStatusBarErrorMes("not supprt file.")
             return  # 無効な画像の場合は処理しない
         self.currentImage = filePath
         self.imageFolder = os.path.dirname(filePath)
@@ -198,16 +205,56 @@ class ImageViewer(QMainWindow):
         # 画像のサイズをウィンドウに合わせて拡大縮小
         self.resizeImage()
 
+    def loadZipImage(self, index):
+        self.currentImage = ""
+        imgname = self.zip_files[index]
+        pixmap = self.getPixmapFromZip(imgname)
+        if not pixmap:
+            self.showStatusBarErrorMes("not supprt file.")
+            return  # 無効な画像の場合は処理しない
+        self.currentImage = imgname
+        self.zip_index = index
+        self.updateTitle()
+        self.updateInfo()
+        self.showStatusBarMes("image loaded.")
+
+        # 画像のサイズをウィンドウに合わせて拡大縮小
+        self.resizeImage()
+
+    def getPixmapFromZip(self, fname):
+        pixmap = None
+        with self.zip_data.open(fname) as file:
+            imgdata = file.read()
+
+        if fname.lower().endswith(".avif"):
+            img = self.get_zip_Image(fname)
+            img = img.convert("RGBA")  # Ensure the image is in RGBA format
+            data = img.tobytes("raw", "RGBA")
+            qimage = QImage(data, img.width, img.height, QImage.Format_RGBA8888)
+            pixmap = QPixmap.fromImage(qimage)
+        else:
+            qimage = QImage()
+            if qimage.loadFromData(imgdata):
+                pixmap = QPixmap.fromImage(qimage)
+
+        return pixmap
+
     def updateTitle(self):
-        if self.currentImage and self.imageFiles:
+        wt = WINDOW_TITLE
+        if self.zip_data:
+            currentIndex = self.zip_index + 1
+            totalFiles = len(self.zip_files)
+            filecountlen = len(str(totalFiles))
+            pos = str(currentIndex).rjust(filecountlen, "0")
+            fileName = f"{self.zip_fname} : {self.currentImage}"
+            wt = f"[{pos}/{totalFiles}] {fileName}"
+        elif self.currentImage:
             currentIndex = self.imageFiles.index(os.path.basename(self.currentImage)) + 1
             totalFiles = len(self.imageFiles)
             filecountlen = len(str(totalFiles))
             pos = str(currentIndex).rjust(filecountlen, "0")
             fileName = os.path.join(self.imageFolder, os.path.basename(self.currentImage)).replace("\\", "/")
             wt = f"[{pos}/{totalFiles}] {fileName}"
-        else:
-            wt = WINDOW_TITLE
         self.setWindowTitle(wt)
 
     def showStatusBarMes(self, mes):
@@ -318,10 +365,12 @@ class ImageViewer(QMainWindow):
             return None
         return pixmap
 
-
     def updateInfo(self):
         if not self.currentImage:   return
-        pixmap = self.loadImageToQPixmapFromFile(self.currentImage)
+        if self.zip_data:
+            pixmap = self.getPixmapFromZip(self.currentImage)
+        else:
+            pixmap = self.loadImageToQPixmapFromFile(self.currentImage)
         width, height = pixmap.width(), pixmap.height()
         self.imageWidth, self.imageHeight = width, height
         comment = "- None -"
@@ -329,17 +378,27 @@ class ImageViewer(QMainWindow):
         self.filetype = 1   #0:org jpg 1:sd1111 or forge png, 2:comfyUI png, 3:other file
         #ToDo:改行コードの扱いがおかしい
         # pngではreader.textでキャリッジ・リターンが無視されている感じ？
-        imgcomment = sdfileUtility.get_prompt_from_imgfile(self.currentImage)
+        #imgcomment = sdfileUtility.get_prompt_from_imgfile(self.currentImage)
+        if self.zip_data:
+            img = self.get_zip_Image(self.currentImage)
+        else:
+            img = Image.open(self.currentImage)
+        imgcomment = sdfileUtility.get_prompt_from_Image(img, self.currentImage)
+
         if imgcomment and imgcomment != "":
             self.filetype = 1
             if imgcomment.count("inputs") > 3:
                 self.filetype = 2
         else:
             self.filetype = 3   #3:other file
-            reader = QImageReader(self.currentImage)
-            imgcomment = str(reader.text("prompt"))
-            if not imgcomment or imgcomment == "":
-                imgcomment = str(reader.text("Description"))
+            if self.zip_data:
+                reader = self.get_zip_QImageReader(self.currentImage)
+            else:
+                reader = QImageReader(self.currentImage)
+            if reader:
+                imgcomment = str(reader.text("prompt"))
+                if not imgcomment:
+                    imgcomment = str(reader.text("Description"))
         if not imgcomment:
             self.filetype = -1
         pvsubfunc.dbgprint(f"filetype = {self.filetype}")
@@ -366,7 +425,10 @@ class ImageViewer(QMainWindow):
 
     def resizeImage(self):
         if self.currentImage:
-            pixmap = self.loadImageToQPixmapFromFile(self.currentImage)
+            if self.zip_data:
+                pixmap = self.getPixmapFromZip(self.currentImage)
+            else:
+                pixmap = self.loadImageToQPixmapFromFile(self.currentImage)
             # 情報表示を考慮した拡大縮小を行う
             imgsize = self.centralWidget.size()
             if self.fullscreen == False:
@@ -428,25 +490,53 @@ class ImageViewer(QMainWindow):
         #QApplication.processEvents()
 
     #次の画像
-    def showNextImage(self):
-        if self.currentImage and self.imageFiles:
-            currentIndex = self.imageFiles.index(os.path.basename(self.currentImage))
-            nextIndex = (currentIndex + 1) % len(self.imageFiles)
-            self.loadImage(os.path.join(self.imageFolder, self.imageFiles[nextIndex]).replace("\\", "/"))
-            if nextIndex == 0:
-                self.showStatusBarMes("first file")
+    def showNextImage(self, step=1):
+        if self.currentImage:
+            fileslen = 0
+            if self.zip_data:
+                fileslen = len(self.zip_files)
+            else:
+                fileslen = len(self.imageFiles)
+            if (fileslen <= 1): return
+
+            nextIndex = -1
+            if self.zip_data:
+                currentIndex = self.zip_index
+                nextIndex = (currentIndex + step) % fileslen
+                self.loadZipImage(nextIndex)
+            elif self.imageFiles:
+                currentIndex = self.imageFiles.index(os.path.basename(self.currentImage))
+                nextIndex = (currentIndex + step) % fileslen
+                self.loadImage(os.path.join(self.imageFolder, self.imageFiles[nextIndex]).replace("\\", "/"))
+
+            if nextIndex < currentIndex:
+                self.showStatusBarMes("back to front")
                 self.play_wave(self.soundMoveTop)
             else:
                 self.showStatusBarMes("")
 
     #前の画像
-    def showPreviousImage(self):
-        if self.currentImage and self.imageFiles:
-            currentIndex = self.imageFiles.index(os.path.basename(self.currentImage))
-            prevIndex = (currentIndex - 1) % len(self.imageFiles)
-            self.loadImage(os.path.join(self.imageFolder, self.imageFiles[prevIndex]).replace("\\", "/"))
-            if prevIndex == len(self.imageFiles)-1:
-                self.showStatusBarMes("last file")
+    def showPreviousImage(self, step=1):
+        if self.currentImage:
+            fileslen = 0
+            if self.zip_data:
+                fileslen = len(self.zip_files)
+            else:
+                fileslen = len(self.imageFiles)
+            if (fileslen <= 1): return
+
+            prevIndex = -1
+            if self.zip_data:
+                currentIndex = self.zip_index
+                prevIndex = (currentIndex - step) % fileslen
+                self.loadZipImage(prevIndex)
+            elif self.imageFiles:
+                currentIndex = self.imageFiles.index(os.path.basename(self.currentImage))
+                prevIndex = (currentIndex - step) % fileslen
+                self.loadImage(os.path.join(self.imageFolder, self.imageFiles[prevIndex]).replace("\\", "/"))
+
+            if prevIndex > currentIndex:
+                self.showStatusBarMes("back to rear")
                 self.play_wave(self.soundMoveEnd)
             else:
                 self.showStatusBarMes("")
@@ -479,16 +569,13 @@ class ImageViewer(QMainWindow):
 
     #コピー処理
     def copyImageFile(self, destdir):
-        if self.currentImage and self.imageFiles:
+        if self.currentImage:
             srcfile = self.currentImage
-            #destdir = self.imageFileCopyDir
-            if not os.path.isfile(srcfile):
-                self.showStatusBarMes(f"not exist file [{srcfile}]")
-                self.play_wave(self.soundBeep)
+            if not self.zip_data and not os.path.isfile(srcfile):
+                self.showStatusBarErrorMes(f"not exist file [{srcfile}]")
                 return
             if not os.path.isdir(destdir):
-                self.showStatusBarMes(f"not exist dir [{destdir}]")
-                self.play_wave(self.soundBeep)
+                self.showStatusBarErrorMes(f"not exist dir [{destdir}]")
                 return
 
             dest_file = os.path.join(destdir, os.path.basename(srcfile)).replace("\\", "/")
@@ -500,20 +587,36 @@ class ImageViewer(QMainWindow):
                 self.play_wave(self.soundFileCansel)
                 return
 
-            shutil.copy2(srcfile, destdir)
+            if self.zip_data:
+                self.copyFromZipdata(srcfile, dest_file)
+            else:
+                shutil.copy2(srcfile, destdir)
             self.showStatusBarMes(f"copyed [{dest_file}]")
             self.play_wave(self.soundFileCopyOK)
 
+    def copyFromZipdata(self, fname, destfullpath):
+        # ファイルを抽出して保存
+        with self.zip_data.open(fname) as source_file, open(destfullpath, 'wb') as output_file:
+            output_file.write(source_file.read())
+
+        # タイムスタンプを取得して適用
+        zip_info = self.zip_data.getinfo(fname)
+        timestamp = time.mktime(zip_info.date_time + (0, 0, -1))
+        os.utime(destfullpath, (timestamp, timestamp))
+
     #ムーブ処理
     def moveImageFile(self):
-        if self.currentImage and self.imageFiles:
+        if self.zip_data:
+            self.showStatusBarErrorMes(f"not support - move cannot be performed on zip files")
+            return
+
+        if self.currentImage:
             srcfile = self.currentImage
             destdir = self.imageFileMoveDir
             dest_file = os.path.join(destdir, os.path.basename(srcfile)).replace("\\", "/")
 
             if not os.path.isdir(destdir):
-                self.showStatusBarMes(f"not exist dir [{destdir}]")
-                self.play_wave(self.soundBeep)
+                self.showStatusBarErrorMes(f"not exist dir [{destdir}]")
                 return
 
             #すでに対象ファイルがなく、移動先フォルダに存在する場合は元に戻す
@@ -540,19 +643,63 @@ class ImageViewer(QMainWindow):
             app.processEvents()
 
     def loadFile(self, fname):
+        self.zip_fname = ""
+        self.zip_files = None
+        self.zip_data = None
         if os.path.isfile(fname):
-            self.loadImage(fname)
+            if fname.lower().endswith(".zip"):
+                try:
+                    with open(fname, "rb") as f:
+                        zip_bytes = io.BytesIO(f.read())
+                        self.zip_data = zipfile.ZipFile(zip_bytes, "r")
+                    self.zip_files = self.get_zip_filelist()
+                    self.zip_index = 0
+                    if self.zip_files and len(self.zip_files) > 0:
+                        #以降、self.zip_dataがNoneでない＝zip表示中として扱う
+                        self.zip_fname = fname
+                        self.loadZipImage(self.zip_index)
+                    else:
+                        self.zip_data = None
+                        self.showStatusBarErrorMes(f"no image files in this zipfile")
+                except Exception as e:
+                    self.zip_data = None
+                    self.showStatusBarErrorMes(f"error : zipfile load")
+            else:
+                self.loadImage(fname)
         elif os.path.isdir(fname):
             files = sorted([f for f in os.listdir(fname) if f.lower().endswith(SUPPORT_EXT)])
             if len(files) > 0:
                 self.loadImage(os.path.join(fname, files[0]).replace("\\", "/"))
             else:
-                self.showStatusBarMes(f"no image files in this folder")
-                self.play_wave(self.soundBeep)
+                self.showStatusBarErrorMes(f"no image files in this folder")
         else:
-            self.showStatusBarMes(f"not support file type")
-            self.play_wave(self.soundBeep)
+            self.showStatusBarErrorMes(f"not support file type")
 
+    def get_zip_filelist(self):
+        return [f for f in self.zip_data.namelist() if f.lower().endswith(SUPPORT_EXT)]
+
+    def get_zip_Image(self, fname):
+        img = None
+        with self.zip_data.open(fname) as file:
+            imgdata = file.read()
+            img = Image.open(io.BytesIO(imgdata))
+        return img
+
+    def get_zip_QImageReader(self, fname):
+        reader = None
+        try:
+            with self.zip_data.open(fname) as file:
+                imgdata = file.read()
+                byte_array = QByteArray(imgdata)
+                reader = QImageReader()
+                reader.setDecideFormatFromContent(True)
+                reader.setDevice(io.BytesIO(byte_array))
+        except Exception as e:
+            #QImageReader.setDevice()が巨大なファイル(数万dotの画像)だと例外が起きる
+            #目的がファイルコメントの取得なのでエラー扱いにせず、プリントのみとしておく
+            print(f"worning : zipfile QImageReader")
+            return None
+        return reader
 
     #========================================
     #= キーイベント処理（QTextBoxにて消費される分）
@@ -563,11 +710,15 @@ class ImageViewer(QMainWindow):
         if event.type() == QEvent.KeyPress:
             # カーソルキーの判定
             keyid = event.key()
-            if keyid in {Qt.Key_Up, Qt.Key_Down, Qt.Key_Left, Qt.Key_Right, Qt.Key_Enter, Qt.Key_Return}:
+            if keyid in {Qt.Key_Up, Qt.Key_Down, Qt.Key_Left, Qt.Key_Right, Qt.Key_Enter, Qt.Key_Return, Qt.Key_PageUp, Qt.Key_PageDown}:
                 if keyid == Qt.Key_Right:
                     self.showNextImage()        #次のイメージへ
                 elif keyid == Qt.Key_Left:
                     self.showPreviousImage()    #前のイメージへ
+                if keyid == Qt.Key_PageDown:
+                    self.showNextImage(10)      #10ファイル先のイメージへ
+                elif keyid == Qt.Key_PageUp:
+                    self.showPreviousImage(10)  #10ファイル前のイメージへ
                 elif keyid in {Qt.Key_Enter, Qt.Key_Return}:
                     self.toggleFullscreen()     #全画面切り替え
                 elif keyid == Qt.Key_Up:
@@ -576,7 +727,6 @@ class ImageViewer(QMainWindow):
                     self.moveImageFile()        #ムーブ処理
                     #self.copyImageFile(self.imageFileMoveDir)        #コピー処理２（設定のムーブフォルダへコピー）
                     #self.showMinimized()        #ウィンドウを最小化
-                    pass
                 return True  # イベントをここで処理したとみなして消費
         return super().eventFilter(obj, event)
 
@@ -602,6 +752,12 @@ class ImageViewer(QMainWindow):
         #前のイメージへ
         elif keyid in {Qt.Key_A}:       #Qt.Key_LeftはeventFilter()にて記載
             self.showPreviousImage()    #前のイメージへ
+        #10ファイル先のイメージへ
+        elif keyid in {Qt.Key_C}:       #Qt.Key_PageDownはeventFilter()にて記載
+            self.showNextImage(10)      #10ファイル先のイメージへ
+        #10ファイル前のイメージへ
+        elif keyid in {Qt.Key_Z}:       #Qt.Key_PageUpはeventFilter()にて記載
+            self.showPreviousImage(10)  #10ファイル前のイメージへ
         elif keyid == Qt.Key_K:   #copy seed
             self.copyInfoSeed()
         elif keyid == Qt.Key_P:   #copy prompt
@@ -660,7 +816,7 @@ class ImageViewer(QMainWindow):
         if event.mimeData().hasUrls():
             filePath = event.mimeData().urls()[0].toLocalFile()
             if os.path.isfile(filePath):
-                if not any(filePath.lower().endswith(ext) for ext in SUPPORT_EXT):
+                if not filePath.lower().endswith(".zip") and not any(filePath.lower().endswith(ext) for ext in SUPPORT_EXT):
                     return
             self.loadFile(filePath)
 

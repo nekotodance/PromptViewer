@@ -8,34 +8,20 @@ import pillow_avif
 def get_exifcomment_from_file(file):
     try:
         img = Image.open(file)
-        exif_data = img.info.get("exif")
-        if exif_data is None:
-            return None
-        exif_dict = piexif.load(exif_data)
-        comment = exif_dict["Exif"].get(piexif.ExifIFD.UserComment)
-        if comment.startswith(b'UNICODE\x00'):
-            comment = comment[len(b'UNICODE\x00'):]
-        comment = comment.replace(b'\x00', b'')
-        comment = comment.decode('utf-8')
-        return comment
+        comment = get_exifcomment_from_Image(img)
     except Exception as e:
-        print(f"Error get_avifcomment_from_file {file}: {e}")
+        print(f"Error get_exifcomment_from_file {file}: {e}")
         return None
+    return comment
 
 def get_pngcomment_from_file(file):
     try:
-        with Image.open(file) as img:
-            if isinstance(img, PngImagePlugin.PngImageFile):
-                metadata = img.info.get("parameters", "") #1:sd1111 or forge png
-                #--------
-                #T.B.C.:変換後のファイルはComfyUIで開けないが、一応exifコメントには格納しておく用に対応
-                #--------
-                if not metadata:
-                    metadata = img.info.get("prompt", "") #2:comfyUI png
+        img = Image.open(file)
+        comment = get_pngcomment_from_Image(img)
     except Exception as e:
         print(f"Error get_pngcomment_from_file {file}: {e}")
         return None
-    return metadata
+    return comment
 
 def get_prompt_from_imgfile(img_file):
     fn, ext = os.path.splitext(img_file)
@@ -47,6 +33,50 @@ def get_prompt_from_imgfile(img_file):
         print(f"not support image file type : {ext}")
         return None
     return comment
+
+def get_exifcomment_from_Image(img, fname):
+    comment = None
+    try:
+        exif_data = img.info.get("exif")
+        if exif_data is None:
+            return None
+        exif_dict = piexif.load(exif_data)
+        comment = exif_dict["Exif"].get(piexif.ExifIFD.UserComment)
+        if comment.startswith(b'UNICODE\x00'):
+            comment = comment[len(b'UNICODE\x00'):]
+        comment = comment.replace(b'\x00', b'')
+        comment = comment.decode('utf-8')
+    except Exception as e:
+        print(f"Error get_exifcomment_from_Image {fname}: {e}")
+        return None
+    return comment
+
+def get_pngcomment_from_Image(img, fname):
+    comment = None
+    try:
+        if isinstance(img, PngImagePlugin.PngImageFile):
+            comment = img.info.get("parameters", "") #1:sd1111 or forge png
+            #--------
+            #T.B.C.:変換後のファイルはComfyUIで開けないが、一応exifコメントには格納しておく用に対応
+            #--------
+            if not comment:
+                comment = img.info.get("prompt", "") #2:comfyUI png
+    except Exception as e:
+        print(f"Error get_pngcomment_from_Image {fname}: {e}")
+        return None
+    return comment
+
+def get_prompt_from_Image(img, fname):
+    fn, ext = os.path.splitext(fname)
+    if ext.lower() in (".jpg", ".webp", ".avif"):
+        comment = get_exifcomment_from_Image(img, fname)
+    elif ext.lower() in (".png"):
+        comment = get_pngcomment_from_Image(img, fname)
+    else:
+        print(f"not support image file type : {ext}")
+        return None
+    return comment
+
 
 def convert_to_jpgwebp(infile, outfile, quality, comment):
     with Image.open(infile) as img:

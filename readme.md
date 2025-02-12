@@ -1,9 +1,12 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.1.9
+## PromptViewerについて 0.2.0
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
-jpg, png, webp, avifファイルの表示をサポートしています  
+jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
+> [!TIP]
+> 0.2.0より、zipファイルのドラッグドロップにも対応しました
+
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
 ## 特徴
@@ -19,33 +22,36 @@ jpg, png, webp, avifファイルの表示をサポートしています
 - Pythonのインストール（SD標準の3.10.6推奨）  
 - zipファイルを解凍  
 - 解凍したフォルダ内の「pv-install.ps1」を右クリックして「PowerShellで実行」を選択  
+> [!WARNING]
+> シェルスクリプトはデフォルトでは動作しない設定となっています  
+> その場合はターミナルを管理者として実行し、Set-ExecutionPolicy RemoteSignedをまず実行してください  
+
 - イントールの最後にデスクトップにリンクをコピーするかどうかを聞いてきます  
 「"Do you want to copy the shortcut to your desktop? (y or enter/n)」  
 必要があれば「y」入力後、もしくはそのまま「enter」キー  
 必要なければ「n」入力後「enter」キー  
 - PromptViewerリンクが作成されます
 - 設定の変更  
-！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと！  
+> [!WARNING]
+> 「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと！  
 
 ## インストール方法（手動）
 - Pythonのインストール（SD標準の3.10.6推奨）  
 - gitのインストール  
 - git cloneでリポジトリを取得  
     https://github.com/nekotodance/PromptViewer.git  
-- シェルスクリプトの実行（右クリックして「PowerShellで実行」を選択）  
-    pv-install.ps1  
-- リンクファイルのダブルクリック、もしくは画像ファイル、フォルダをドラッグ＆ドロップ  
-    PromptViewer.lnk  
-- 設定の変更  
-！「設定ファイルについて」を参照し、image-fcopy-dir、image-fmove-dirを変更のこと！  
+- 以降は簡易版のzipファイル解凍後と同様
 
 ## 設定ファイルについて
 PromptViewer_settings.jsonに以下の情報を保持しています  
-！特にimage-fcopy-dir、image-fmove-dirは【自分の環境に合わせて必ず】書き換えてください！  
 
 - コピー、ムーブ先のディレクトリ設定
   - image-fcopy-dir   : W,上キーによるファイルのコピー先フォルダ名  
   - image-fmove-dir   : S,下キーによるファイルのムーブ先フォルダ名（こちらはファイルの移動となるので注意）  
+> [!CAUTION]
+> image-fcopy-dir、image-fmove-dirは【自分の環境に合わせて必ず】書き換えてください！  
+> またパスの区切り文字は、ウインドウズの「W:\\_temp\\ai」ではなく「W:/_temp/ai」として記載してください  
+
 - 画面の表示に関する設定
   - info-label-w      : Prompt表示領域の横幅(デフォルト値:480)  
   - geometry-x,y      : 最後のウインドウ表示位置  
@@ -60,12 +66,13 @@ PromptViewer_settings.jsonに以下の情報を保持しています
   - sound-move-end    : 前の画像表示時に、一廻りして最後の画像に戻った時の音  
 
 ## 利用方法
-アプリ上に画像ファイル（JPGかPNGファイル）、もしくは画像ファイルが入ったフォルダをドラッグ＆ドロップしてください  
-リンクファイルへのドラッグ＆ドロップでも動作します  
-またはPython実行時の引数に画像ファイルか画像が入ったフォルダを指定してください  
+アプリ上に画像ファイル（JPGかPNGファイル）もしくは画像ファイルが入ったフォルダ、画像ファイルを圧縮したzipファイルをドラッグ＆ドロップしてください  
+※リンクファイル自体へのドラッグ＆ドロップでも動作します  
+※Python実行時の引数にファイルやフォルダを指定することでも動作します  
 
 #### キー操作（割当を変えたい人はソースのキーイベント処理を好きに書き換えてください）
 AD,左右   : 同じフォルダ内の前後の画像に移動  
+ZC,PageUp/Down : 10ファイル単位のスキップ移動  
 Q,ESC     : 終了  
 0,1,2     : 画像のサイズの0:1/2、1:等倍、2:2倍にフィット表示（トグル動作）  
 F,Enter   : 全画面表示に切り替え（トグル動作）  
@@ -84,6 +91,7 @@ H         : Hires Prompt文字列をコピーバッファへ ※4
 
 ※2:コピーは再度キーを押すことでキャンセル（コピー先から削除）出来ます  
 ※3:ムーブは再度キーを押すことで取り消し出来ます（画像から移動していない場合のみ可能）  
+    ただしzipファイル参照中はムーブ処理は行われません  
 ※4:ComfyUIの出力ファイルには対応していません  
 
 ## 画面の表示内容
@@ -91,7 +99,7 @@ ForgeやA1111の場合のPrompt表示イメージ
 ![PromptViewer-image](docs/PromptViewer-image002.jpg)
 
 #### Window Title
-「[現在表示中の画像番号/同一フォルダ内の画像総数] フルパスのファイル名」  
+[現在表示中の画像番号/同一フォルダ（もしくはzipファイル）内の画像総数] フルパスのファイル名  
 
 #### Prompt Info
 以下のように文字の色や太さを変えて表示
@@ -118,6 +126,7 @@ ComfyUIの場合のPrompt表示イメージ
 - ComfyUIのPrompt情報のコピーや色付けには対応していません  
 
 ## 変更履歴
+- 0.2.0 zipファイルのドラッグドロップに対応、ZCPageUp/Downキーでのスキップ移動対応など  
 - 0.1.9 ComfyUIファイルのPrompt強調を追加など  
 - 0.1.8 ComfyUIファイルの判定方法を修正  
 - 0.1.7 アプリアイコンの設定  
