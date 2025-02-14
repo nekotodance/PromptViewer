@@ -1,6 +1,6 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.2.0
+## PromptViewerについて 0.2.1
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
@@ -18,6 +18,11 @@ jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポ
 ## インストール方法（簡易）
 [簡易インストール版zipのダウンロード]  
     https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip  
+
+> [!TIP]
+> 下記を読んでもインストールの方法が良く分からない  
+> もしくは少し修正して自分好みの動作にしてみたい方は御覧ください  
+> https://www.youtube.com/watch?v=6_ijw0X4_mo
 
 - Pythonのインストール（SD標準の3.10.6推奨）  
 - zipファイルを解凍  
@@ -126,6 +131,7 @@ ComfyUIの場合のPrompt表示イメージ
 - ComfyUIのPrompt情報のコピーや色付けには対応していません  
 
 ## 変更履歴
+- 0.2.1 軽微な修正、初心者用インストール兼カスタマイズ方法動画の参照追加  
 - 0.2.0 zipファイルのドラッグドロップに対応、ZCPageUp/Downキーでのスキップ移動対応など  
 - 0.1.9 ComfyUIファイルのPrompt強調を追加など  
 - 0.1.8 ComfyUIファイルの判定方法を修正  

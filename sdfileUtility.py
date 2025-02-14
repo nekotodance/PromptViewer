@@ -42,8 +42,11 @@ def get_exifcomment_from_Image(img, fname):
             return None
         exif_dict = piexif.load(exif_data)
         comment = exif_dict["Exif"].get(piexif.ExifIFD.UserComment)
-        if comment.startswith(b'UNICODE\x00'):
-            comment = comment[len(b'UNICODE\x00'):]
+        #もしtupleで返却されればbytes型に変換
+        if isinstance(comment, tuple):
+            comment = bytes(comment)
+        if comment.startswith(b'UNICODE'):
+            comment = comment[len(b'UNICODE'):]
         comment = comment.replace(b'\x00', b'')
         comment = comment.decode('utf-8')
     except Exception as e:
