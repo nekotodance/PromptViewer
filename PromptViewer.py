@@ -43,7 +43,10 @@ class ImageViewer(QMainWindow):
         self.initUI()
 
     def closeEvent(self, event):
-        """ウィンドウを閉じる際に設定を保存"""
+        #全画面を解除してから終了（変な画面サイズが保存されてしまうため）
+        if self.fullscreen:
+            self.toggleFullscreen()
+        #ウィンドウを閉じる際に設定を保存
         self.save_settings()
         super().closeEvent(event)
 
@@ -170,7 +173,6 @@ class ImageViewer(QMainWindow):
         self.soundMoveEnd = pvsubfunc.read_value_from_config(SETTINGS_FILE, SOUND_MOVE_END)
 
         self.infoLabelWidth = pvsubfunc.read_value_from_config(SETTINGS_FILE, INFO_LABEL_W)
-        #self.setGeometry(100, 200, 320, 480)    #位置とサイズ
         geox = pvsubfunc.read_value_from_config(SETTINGS_FILE, GEOMETRY_X)
         geoy = pvsubfunc.read_value_from_config(SETTINGS_FILE, GEOMETRY_Y)
         geow = pvsubfunc.read_value_from_config(SETTINGS_FILE, GEOMETRY_W)
@@ -179,6 +181,7 @@ class ImageViewer(QMainWindow):
             self.setGeometry(0, 0, 600, 640)    #位置とサイズ
         else:
             self.setGeometry(geox, geoy, geow, geoh)    #位置とサイズ
+        self.setMinimumSize(320 + self.infoLabelWidth, 320)      #最小サイズ（兼デフォルトサイズ）
 
     def save_settings(self):
         pvsubfunc.write_value_to_config(SETTINGS_FILE, GEOMETRY_X, self.geometry().x())
@@ -312,7 +315,7 @@ class ImageViewer(QMainWindow):
                                         "<span style='color: #00FFFF; font-size: 14px;'><b>", "</b></span>")
         #Model名の強調
         comres = pvsubfunc.insert_between_all(comres,
-                                        "Model: ", ", VAE",
+                                        "Model: ", ",",
                                         "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
         #Lora部分の強調
         comres = pvsubfunc.insert_between_all(comres,
@@ -446,7 +449,7 @@ class ImageViewer(QMainWindow):
         if self.currentImage == "":
             return  # 画像がない場合も無効
 
-        if self.fitscreen < 0:
+        if self.fitscreen != scale:
             #通常モードからFitモードへ
             self.fitscreen = scale
             #現在のウインドウサイズを退避
@@ -737,8 +740,12 @@ class ImageViewer(QMainWindow):
     def keyPressEvent(self, event):
         keyid = event.key()
         pvsubfunc.dbgprint(f"[DBG] keyid : {keyid}")
+        #Ctrlキー併用は別で処理する
+        if event.modifiers() & Qt.ControlModifier:
+            if keyid in {Qt.Key_W}:
+                self.appexit()
         #1/2倍表示
-        if keyid == Qt.Key_0:
+        elif keyid == Qt.Key_0:
             self.toggleFitScreen(0)
         #等倍表示
         elif keyid in {Qt.Key_1, Qt.Key_F}:
@@ -784,9 +791,7 @@ class ImageViewer(QMainWindow):
         super().keyPressEvent(event)
 
     def appexit(self):
-        #全画面を解除してから終了（変な画面サイズが保存されてしまうため）
-        if self.fullscreen:
-            self.toggleFullscreen()
+        #キーによる終了でなかった場合に、ここの処理が行われないためcloseEventに移動
         self.exit()
 
     #ダブルクリック時に全画面切り替え

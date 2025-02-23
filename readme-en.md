@@ -1,4 +1,4 @@
-## About PromptViewer 0.2.0
+## About PromptViewer 0.2.2
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
@@ -16,6 +16,11 @@ Supports jpg, png, webp, avif file or zip files of images
 ## How to install (simple)
 [Download the simple installation version zip].  
     https://github.com/nekotodance/PromptViewer/releases/download/latest/PromptViewer.zip  
+
+> [!TIP]
+> If you are still not sure how to install it after reading the following...  
+> If you are not sure how to install it after reading the following, or if you want to modify it a little to make it work the way you like, please take a look at this page (in Japanese only)  
+> https://www.youtube.com/watch?v=6_ijw0X4_mo
 
 - Install Python (SD standard 3.10.6 recommended)  
 - Extract the zip file  
@@ -123,6 +128,8 @@ Display of operation status
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
+- 0.2.2 Minor modifications, changed the judgment method because there was a sense of discomfort with the 0, 1, and 2 keys, and added Ctrl key combination operation.  
+- 0.2.1 Minor modifications, added reference to a beginner's installation and customization video (in Japanese)  
 - 0.2.0 Support for drag-drop of zip files, support for skip movement with ZC key, etc  
 - 0.1.9 Added Prompt emphasis for ComfyUI files, etc  
 - 0.1.8 Corrected the method of determining ComfyUI files  
