@@ -2,8 +2,6 @@
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
-> [!TIP]
-> Drag-drop of zip files is now supported starting from 0.2.0
 
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
@@ -27,7 +25,9 @@ Supports jpg, png, webp, avif file or zip files of images
 - Right-click “pv-install.ps1” in the extracted folder and select “Run with PowerShell  
 > [!WARNING]
 > Shell scripts are not configured to work by default!  
-> In that case, run the terminal as an administrator and run Set-ExecutionPolicy RemoteSigned first!  
+> In that case, run the terminal as an administrator and execute the following command (relatively secure method)  
+> Set-ExecutionPolicy Unrestricted -Scope CurrentUser -Force
+
 - At the end of the install, it will ask if you want to copy the link to your desktop  
 At the end of the install, it will ask if you want to copy the link to your desktop.  
 Type “y” if you want to, or just press “enter”.  
@@ -40,9 +40,12 @@ If not necessary, type “n” and press “enter
 ## How to install (manually)
 - Install Python (SD standard 3.10.6 recommended)  
 - Install git  
-- Get repository with git clone  
-    https://github.com/nekotodance/PromptViewer.git  
-- The following is the same as after unzipping the simplified version of the zip file.
+- Get repository with git  
+    git clone https://github.com/nekotodance/PromptViewer
+- Required libraries  
+    pip install PyQt5 pyperclip Image piexif pillow-avif-plugin
+- How to run  
+    Python PromptViewer.py
 
 ## About the settings file
 PromptViewer_settings.json holds the following information  
@@ -119,6 +122,12 @@ Prompt display image in case of ComfyUI
 
 #### Status Bar
 Display of operation status
+
+## Misc.
+I created a 0.2.2-based function to turn on/off the prompt information display part as a trial.  
+If you are interested, please feel free to learn how to program it.  
+(I don't intend to incorporate it into the main program, as there are plenty of other excellent image viewers out there.)  
+https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2base-toggle_InfoText.py
 
 ## Notes
 - We have checked the display in the output files of Automatic1111, Forge, reForge, and ComfyUI.  

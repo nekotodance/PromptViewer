@@ -4,8 +4,6 @@
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
-> [!TIP]
-> 0.2.0より、zipファイルのドラッグドロップにも対応しました
 
 ![PromptViewer-image](docs/PromptViewer-image001.jpg)
 
@@ -29,7 +27,8 @@ jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポ
 - 解凍したフォルダ内の「pv-install.ps1」を右クリックして「PowerShellで実行」を選択  
 > [!WARNING]
 > シェルスクリプトはデフォルトでは動作しない設定となっています  
-> その場合はターミナルを管理者として実行し、Set-ExecutionPolicy RemoteSignedをまず実行してください  
+> その場合はターミナルを管理者として実行し、以下のコマンドを実行してください（比較的安全な方式）  
+> Set-ExecutionPolicy Unrestricted -Scope CurrentUser -Force
 
 - イントールの最後にデスクトップにリンクをコピーするかどうかを聞いてきます  
 「"Do you want to copy the shortcut to your desktop? (y or enter/n)」  
@@ -43,9 +42,12 @@ jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポ
 ## インストール方法（手動）
 - Pythonのインストール（SD標準の3.10.6推奨）  
 - gitのインストール  
-- git cloneでリポジトリを取得  
-    https://github.com/nekotodance/PromptViewer.git  
-- 以降は簡易版のzipファイル解凍後と同様
+- gitでリポジトリを取得  
+    git clone https://github.com/nekotodance/PromptViewer
+- 必要なライブラリ  
+    pip install PyQt5 pyperclip Image piexif pillow-avif-plugin
+- 実行方法  
+    Python PromptViewer.py
 
 ## 設定ファイルについて
 PromptViewer_settings.jsonに以下の情報を保持しています  
@@ -122,6 +124,12 @@ ComfyUIの場合のPrompt表示イメージ
 
 #### Status Bar
 動作状況の表示
+
+## その他
+試しにプロンプト情報表示部分をオン・オフする機能を0.2.2ベースで作成しました  
+興味があればプログラムの勉強がてらにどうぞ  
+（他に優れた画像ビューアはいくらでもあるので本筋に組み込む気はないですが）  
+https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2base-toggle_InfoText.py
 
 ## 注意事項
 - Automatic1111、Forge、reForge、ComfyUIの出力ファイルで表示を確認しています  
