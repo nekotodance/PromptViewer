@@ -1,6 +1,6 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.2.2
+## PromptViewerについて 0.2.3
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
@@ -89,6 +89,7 @@ K         : シード番号をコピーバッファへ ※4
 P         : Prompt文字列をコピーバッファへ ※4  
 N         : Negative Prompt文字列をコピーバッファへ ※4  
 H         : Hires Prompt文字列をコピーバッファへ ※4  
+I         : Prompt情報表示の表示・非表示切り替え（トグル動作）  
 
 #### マウス操作
 ホイール操作      : 同じフォルダ内の前後の画像に移動  
@@ -129,7 +130,8 @@ ComfyUIの場合のPrompt表示イメージ
 試しにプロンプト情報表示部分をオン・オフする機能を0.2.2ベースで作成しました  
 興味があればプログラムの勉強がてらにどうぞ  
 （他に優れた画像ビューアはいくらでもあるので本筋に組み込む気はないですが）  
-https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2base-toggle_InfoText.py
+https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2base-toggle_InfoText.py  
+-> 0.2.3で実装してしまいました
 
 ## 注意事項
 - Automatic1111、Forge、reForge、ComfyUIの出力ファイルで表示を確認しています  
@@ -139,6 +141,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ComfyUIのPrompt情報のコピーや色付けには対応していません  
 
 ## 変更履歴
+- 0.2.3 Webpアニメーション対応（暫定）、プロンプト情報表示オンオフ対応
 - 0.2.2 軽微な修正、0,1,2キーでの操作に違和感があったので判定方法を変更、Ctrlキー併用動作を追加  
 - 0.2.1 軽微な修正、初心者用インストール兼カスタマイズ方法動画の参照追加  
 - 0.2.0 zipファイルのドラッグドロップに対応、ZCPageUp/Downキーでのスキップ移動対応など  

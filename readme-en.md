@@ -1,4 +1,4 @@
-## About PromptViewer 0.2.2
+## About PromptViewer 0.2.3
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
@@ -87,6 +87,7 @@ K : Seed number to copy buffer *4
 P : Prompt string to copy buffer *4  
 N : Negative Prompt string to copy buffer *4  
 H : Hires Prompt string to copy buffer *4  
+I : Toggle between displaying and not displaying Prompt information display (toggle operation)
 
 #### Mouse operation
 Wheel operation : Move to the next/previous image in the same folder  
@@ -128,6 +129,7 @@ I created a 0.2.2-based function to turn on/off the prompt information display p
 If you are interested, please feel free to learn how to program it.  
 (I don't intend to incorporate it into the main program, as there are plenty of other excellent image viewers out there.)  
 https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2base-toggle_InfoText.py
+-> I implemented it in 0.2.3.
 
 ## Notes
 - We have checked the display in the output files of Automatic1111, Forge, reForge, and ComfyUI.  
@@ -137,6 +139,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
+- 0.2.3 Webp animation support (tentative), prompt information display on/off
 - 0.2.2 Minor modifications, changed the judgment method because there was a sense of discomfort with the 0, 1, and 2 keys, and added Ctrl key combination operation.  
 - 0.2.1 Minor modifications, added reference to a beginner's installation and customization video (in Japanese)  
 - 0.2.0 Support for drag-drop of zip files, support for skip movement with ZC key, etc  

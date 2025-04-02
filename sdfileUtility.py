@@ -42,6 +42,9 @@ def get_exifcomment_from_Image(img, fname):
             return None
         exif_dict = piexif.load(exif_data)
         comment = exif_dict["Exif"].get(piexif.ExifIFD.UserComment)
+        # ComfyUIで作成したwebpアニメーション対応（暫定）
+        if not comment or comment == "":
+            comment = exif_dict["0th"].get(272)
         #もしtupleで返却されればbytes型に変換
         if isinstance(comment, tuple):
             comment = bytes(comment)

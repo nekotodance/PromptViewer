@@ -2,9 +2,12 @@ import sys
 import os
 import json
 import shutil
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QTextEdit, QVBoxLayout, QWidget, QStatusBar, QHBoxLayout
-from PyQt5.QtGui import QPixmap, QImageReader, QImage, QIcon
-from PyQt5.QtCore import Qt, QEvent, QRect, QByteArray
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow, QLabel, QTextEdit, QVBoxLayout, QHBoxLayout,
+    QWidget, QStatusBar,
+)
+from PyQt5.QtGui import QPixmap, QImageReader, QImage, QIcon, QMovie
+from PyQt5.QtCore import Qt, QEvent, QRect, QByteArray, QSize
 from PyQt5.QtMultimedia import QSound
 import html
 import pyperclip
@@ -46,6 +49,9 @@ class ImageViewer(QMainWindow):
         #全画面を解除してから終了（変な画面サイズが保存されてしまうため）
         if self.fullscreen:
             self.toggleFullscreen()
+        #情報表示をもとに戻してから終了
+        if not self.showInfoText:
+            self.toggleInfoText()
         #ウィンドウを閉じる際に設定を保存
         self.save_settings()
         super().closeEvent(event)
@@ -93,6 +99,9 @@ class ImageViewer(QMainWindow):
         self.imageLabel.setStyleSheet("background-color: black;")
         self.layout.addWidget(self.imageLabel)
 
+        #webp再生用QMovie
+        self.webpmovie = None   # 画像表示でwebpだった場合のプレイヤー
+
         # 情報表示用ラベル
         self.infoTextEdit = QTextEdit()
         font = self.infoTextEdit.font()
@@ -134,6 +143,7 @@ class ImageViewer(QMainWindow):
         self.infoNegaPrompt = ""
         self.infoHighResPrompt = ""
         self.infoSeed = ""
+        self.showInfoText = True
 
         # アプリ左上のアイコンを設定
         self.setWindowIcon(QIcon("res/PromptViewer.ico"))
@@ -204,6 +214,13 @@ class ImageViewer(QMainWindow):
         self.updateTitle()
         self.updateInfo()
         self.showStatusBarMes("image loaded.")
+
+        self.stop_WEbpMovie()
+        if self.currentImage.lower().endswith(".webp"):
+            self.webpmovie = QMovie(self.currentImage)
+            self.imageLabel.setMovie(self.webpmovie)
+            self.webpmovie.setScaledSize(self.get_fit_size(QImageReader(self.currentImage).size(), self.centralWidget.size()))
+            self.webpmovie.start()
 
         # 画像のサイズをウィンドウに合わせて拡大縮小
         self.resizeImage()
@@ -341,8 +358,11 @@ class ImageViewer(QMainWindow):
         comres = pvsubfunc.insert_between_all(comres,
                                         "{\"lora_name\": \"", "\",",
                                         "<span style='color: #FFFF00; font-size: 14px;'><b>", "</b></span>")
-        #各種強調表示
-        for pword in {"seed:", "Steps:", "steps:", "\"steps\"", "\"noise_seed\""}:
+        #各種強調表示（暫定：webpアニメーションでヒットしそうな項目も追加）
+        for pword in {
+            "seed:", "Steps:", "steps:", "\"steps\"", "\"noise_seed\"", "\"ckpt_name\"", "\"seed\"",
+                      "\"model_name\"", "\"positive_prompt\"", "\"negative_prompt\""
+                      }:
             comres = pvsubfunc.add_around_all(comres, pword, "<span style='color: #CC4400;'>", "</span>")
         return comres
 
@@ -435,8 +455,14 @@ class ImageViewer(QMainWindow):
             # 情報表示を考慮した拡大縮小を行う
             imgsize = self.centralWidget.size()
             if self.fullscreen == False:
-                imgsize.setWidth(imgsize.width() - self.infoLabelWidth)
-            self.imageLabel.setPixmap(pixmap.scaled(imgsize, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                correctwidth = self.infoLabelWidth
+                if not self.showInfoText:
+                    correctwidth = 0
+                imgsize.setWidth(imgsize.width() - correctwidth)
+            if self.currentImage.lower().endswith(".webp"):
+                self.webpmovie.setScaledSize(self.get_fit_size(QImageReader(self.currentImage).size(), imgsize))
+            else:
+                self.imageLabel.setPixmap(pixmap.scaled(imgsize, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
     def resizeEvent(self, event):
         self.resizeImage()  # ウィンドウサイズ変更時に画像をリサイズ
@@ -464,7 +490,8 @@ class ImageViewer(QMainWindow):
                 lw = lw * 2
                 lh = lh * 2
 
-            lw += self.infoLabelWidth   # Prompt情報分の幅を追加
+            if self.showInfoText:
+                lw += self.infoLabelWidth   # Prompt情報分の幅を追加
             lh += correct_height        # Widghetの領域とウインドウの領域の差分を追加
             self.resize(lw, lh)
         else:
@@ -491,6 +518,24 @@ class ImageViewer(QMainWindow):
         self.resizeImage()  # ウィンドウサイズ変更時に画像をリサイズ
         #処理完了を待ちたい場合
         #QApplication.processEvents()
+
+    #情報表示のONOFF切替（画面部品のサイズの調整にて実現）
+    def toggleInfoText(self):
+        gx = self.geometry().x()
+        gy = self.geometry().y()
+        gw = self.geometry().width()
+        gh = self.geometry().height()
+        if self.showInfoText:
+            self.infoTextEdit.setFixedWidth(0)
+            self.setMinimumSize(320, 320)
+            self.setGeometry(gx, gy, gw - self.infoLabelWidth, gh)
+        else:
+            self.infoTextEdit.setFixedWidth(self.infoLabelWidth)
+            self.setMinimumSize(320 + self.infoLabelWidth, 320)
+            self.setGeometry(gx, gy, gw + self.infoLabelWidth, gh)
+        self.showInfoText = not self.showInfoText
+        self.show()     #ウィジェットが表示/非表示などを切り替える場合など
+        self.resizeImage()  # ウィンドウサイズ変更時に画像をリサイズ
 
     #次の画像
     def showNextImage(self, step=1):
@@ -785,6 +830,9 @@ class ImageViewer(QMainWindow):
         #Qt.Key_Enter, Qt.Key_ReturnはeventFilter()にて記載
         #elif keyid in {Qt.Key_Enter, Qt.Key_Return}:
         #    self.toggleFullscreen()
+        #Prompt情報表示のオンオフ
+        elif keyid in {Qt.Key_I}:
+            self.toggleInfoText()
         #終了処理
         elif keyid in {Qt.Key_Escape, Qt.Key_Q, Qt.Key_Slash, Qt.Key_Backslash}:
             self.appexit()
@@ -825,6 +873,7 @@ class ImageViewer(QMainWindow):
                     return
             self.loadFile(filePath)
 
+    # マウスボタンプレスイベント（押し始め）
     def mousePressEvent(self, event):
         pvsubfunc.dbgprint(f"[DBG] mouse button : {event.button()}")
         if event.button() == Qt.LeftButton and not self.fullscreen:
@@ -833,15 +882,32 @@ class ImageViewer(QMainWindow):
         elif event.button() == Qt.RightButton:
             self.copyImageFile(self.imageFileCopyDir)        #コピー処理
 
+    # マウス移動イベント
     def mouseMoveEvent(self, event):
         if self.dragging:
             delta = event.globalPos() - self.last_pos
             self.move(self.pos() + delta)
             self.last_pos = event.globalPos()
 
+    # マウスボタンリリースイベント（離した時）
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.dragging = False
+
+    # webpを再生中なら停止する
+    def stop_WEbpMovie(self):
+        if self.webpmovie != None:
+            self.webpmovie.stop()
+            self.webpmovie = None
+
+    # 元のサイズをターゲットサイズにフィットさせた場合のサイズを取得
+    def get_fit_size(self, size_org, size_target):
+        scaled_width = size_target.width()
+        scaled_height = int(size_org.height() * (scaled_width / size_org.width()))
+        if scaled_height > size_target.height():
+            scaled_height = size_target.height()
+            scaled_width = int(size_org.width() * (scaled_height / size_org.height()))
+        return QSize(scaled_width,scaled_height)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
