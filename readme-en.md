@@ -1,4 +1,4 @@
-## About PromptViewer 0.2.3
+## About PromptViewer 0.2.4
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
@@ -98,7 +98,7 @@ Left drag : Move the window
 2: Copying can be canceled (deleted from the destination) by pressing the key again.  
 3:Move can be canceled by pressing the key again (only possible if the image has not been moved).  
     However, the move process is not performed while referencing the zip file.  
-4:ComfyUI output files are not supported.  
+4:The ComfyUI output file is copied to the copy buffer in its entirety, including workflow information.  
 
 ## Screen display contents
 Prompt display image for Forge and A1111  
@@ -139,7 +139,8 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
-- 0.2.3 Webp animation support (tentative), prompt information display on/off
+- 0.2.4 ComfyUI-like files can be copied in their entirety, including workflow, with the P key.  
+- 0.2.3 Webp animation support (tentative), prompt information display on/off  
 - 0.2.2 Minor modifications, changed the judgment method because there was a sense of discomfort with the 0, 1, and 2 keys, and added Ctrl key combination operation.  
 - 0.2.1 Minor modifications, added reference to a beginner's installation and customization video (in Japanese)  
 - 0.2.0 Support for drag-drop of zip files, support for skip movement with ZC key, etc  

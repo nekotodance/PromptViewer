@@ -350,6 +350,10 @@ class ImageViewer(QMainWindow):
         comres = comres.replace('\\"', '\"')
         comres = comres.replace('\\n', '\n')
         comres = pvsubfunc.normalize_newlines(comres, self.NewLine)
+
+        #ComfyUIっぽいファイルはもうまるごとPrompt扱いに
+        self.infoPrompt = comres
+
         #promptを灰色に
         comres = pvsubfunc.insert_between_all(comres,
                                         " {\"inputs\": {\"text\": \"", "\",",
