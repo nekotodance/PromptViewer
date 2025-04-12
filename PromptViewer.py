@@ -146,7 +146,10 @@ class ImageViewer(QMainWindow):
         self.showInfoText = True
 
         # アプリ左上のアイコンを設定
-        self.setWindowIcon(QIcon("res/PromptViewer.ico"))
+        try:
+            self.setWindowIcon(QIcon("res/PromptViewer.ico"))
+        except Exception as e:
+            print(e)
 
         # ドラッグ＆ドロップ有効化
         self.setAcceptDrops(True)
@@ -339,7 +342,7 @@ class ImageViewer(QMainWindow):
                                         "&lt;lora:", "&gt;",
                                         "<span style='color: #FFFF00; font-size: 14px;'><b>", "</b></span>")
         #各種強調表示
-        for pword in {"ADetailer prompt", "Steps:", "steps:"}:
+        for pword in {"ADetailer prompt", "ADetailer checkpoint", "Steps:", "steps:"}:
             comres = pvsubfunc.add_around_all(comres, pword, "<span style='color: #CC4400;'>", "</span>")
 
         return comres
@@ -354,10 +357,34 @@ class ImageViewer(QMainWindow):
         #ComfyUIっぽいファイルはもうまるごとPrompt扱いに
         self.infoPrompt = comres
 
+        #========================================================
+        #場当たり的だが、少しでも見やすくなりそうな強調表示を追加
+        #各自見やすくなるように追加してください
+        #========================================================
         #promptを灰色に
         comres = pvsubfunc.insert_between_all(comres,
                                         " {\"inputs\": {\"text\": \"", "\",",
                                         "<span style='color: #CCCCCC;'>", "</span>")
+        #SEED番号の強調
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "\"seed\": ", ",",
+                                        "<span style='color: #00FFFF; font-size: 14px;'><b>", "</b></span>")
+        #SEED番号の強調
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "\"noise_seed\": ", "}",
+                                        "<span style='color: #00FFFF; font-size: 14px;'><b>", "</b></span>")
+        #Model名の強調
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "\"unet_name\": \"", "\"",
+                                        "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
+        #Model名の強調
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "\"model_name\": \"", "\"",
+                                        "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
+        #Model名の強調
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "\"ckpt_name\": \"", "\"",
+                                        "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
         #Lora部分の強調
         comres = pvsubfunc.insert_between_all(comres,
                                         "{\"lora_name\": \"", "\",",
@@ -365,8 +392,8 @@ class ImageViewer(QMainWindow):
         #各種強調表示（暫定：webpアニメーションでヒットしそうな項目も追加）
         for pword in {
             "seed:", "Steps:", "steps:", "\"steps\"", "\"noise_seed\"", "\"ckpt_name\"", "\"seed\"",
-                      "\"model_name\"", "\"positive_prompt\"", "\"negative_prompt\""
-                      }:
+            "\"model_name\"", "\"positive_prompt\"", "\"negative_prompt\""
+            }:
             comres = pvsubfunc.add_around_all(comres, pword, "<span style='color: #CC4400;'>", "</span>")
         return comres
 
