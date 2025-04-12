@@ -119,9 +119,10 @@ ForgeやA1111の場合のPrompt表示イメージ
 - 橙色太 : Model名  
 - 橙色 : 文字を着色 ADetailer prompt、Steps:、steps:  
 
-※ComfyUIの出力ファイルには部分的にしか対応していません  
-ComfyUIの場合のPrompt表示イメージ  
+※ComfyUIは利用するノードにより大きく変わるため、部分的にしか対応していません  
+必要があれば個人の利用環境に合わせてソースを修正してください  
 ![PromptViewer-image](docs/PromptViewer-image003.jpg)
+![PromptViewer-image](docs/PromptViewer-image004.jpg)
 
 #### Status Bar
 動作状況の表示

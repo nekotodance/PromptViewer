@@ -117,9 +117,10 @@ Display the text in different colors and thicknesses as follows
 - Bold orange : Model name  
 - Orange : Colorize text ADetailer prompt, Steps:, steps:  
 
-*ComfyUI output files are only partially supported.  
-Prompt display image in case of ComfyUI  
+*ComfyUI is only partially supported as it varies greatly depending on the node used 
+Please modify the source to suit your personal use environment if necessary  
 ![PromptViewer-image](docs/PromptViewer-image003.jpg)
+![PromptViewer-image](docs/PromptViewer-image004.jpg)
 
 #### Status Bar
 Display of operation status
