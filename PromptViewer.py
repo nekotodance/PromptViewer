@@ -269,7 +269,10 @@ class ImageViewer(QMainWindow):
             totalFiles = len(self.zip_files)
             filecountlen = len(str(totalFiles))
             pos = str(currentIndex).rjust(filecountlen, "0")
-            fileName = f"{self.zip_fname} : {self.currentImage}"
+            imagefilename = self.currentImage
+            if self.zip_data:
+                imagefilename = self.zipstringdecode(self.currentImage)
+            fileName = f"{self.zip_fname} : {imagefilename}"
             wt = f"[{pos}/{totalFiles}] {fileName}"
         elif self.currentImage:
             currentIndex = self.imageFiles.index(os.path.basename(self.currentImage)) + 1
@@ -457,8 +460,11 @@ class ImageViewer(QMainWindow):
             self.filetype = -1
         pvsubfunc.dbgprint(f"filetype = {self.filetype}")
 
+        imagefilename = self.currentImage
+        if self.zip_data:
+            imagefilename = self.zipstringdecode(self.currentImage)
         # 情報を2種類のフォントで表示
-        path_info = f"Path: {self.currentImage}"
+        path_info = f"Path: {imagefilename}"
         image_info = f"Size: {width}x{height}px"
         comment_info = f"{imgcomment}"
 
@@ -476,6 +482,24 @@ class ImageViewer(QMainWindow):
         styled_info += f"<span style='color: #008000; font-size: 14px;'><b>{image_info}</b></span><br>"
         styled_info += comment_info
         self.infoTextEdit.setText(styled_info)
+
+    #zipfileモジュールを利用した場合に文字化けするのでデコードする
+    def zipstringdecode(self, name:str):
+        #zipfileモジュールだとエンコードの都合で文字化けするのでWindows用に変換
+        result = name
+        if os.name == 'nt':
+            #Windows
+            #WindowsであえてUTF-8でzipファイルを作成した場合には逆に文字化けする
+            #そんな人はあまりいないはずだが、頻繁にMacとファイルをやり取りする人であればいるかも
+            result = name.encode('cp437').decode('cp932')
+        elif os.name == 'posix':
+            #Mac or Linux
+            #エンコードも画面表示もUTF-8のはずなので基本的に何もしなくて良いはず、たぶん
+            pass
+        else :
+            #Unknown OS
+            pass
+        return result
 
     def resizeImage(self):
         if self.currentImage:

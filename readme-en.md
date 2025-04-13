@@ -1,4 +1,4 @@
-## About PromptViewer 0.2.5
+## About PromptViewer 0.2.6
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
@@ -140,6 +140,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
+- 0.2.6 Correspondence to garbled characters in zip files (Windows only)
 - 0.2.5 Add highlighted keywords, etc
 - 0.2.4 ComfyUI-like files can be copied in their entirety, including workflow, with the P key.  
 - 0.2.3 Webp animation support (tentative), prompt information display on/off  

@@ -1,6 +1,6 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.2.5
+## PromptViewerについて 0.2.6
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
@@ -142,6 +142,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ComfyUIのPrompt情報のコピーや色付けには対応していません  
 
 ## 変更履歴
+- 0.2.6 zipファイルの文字化けに対応（Windows専用）  
 - 0.2.5 強調表示キーワードを追加、他  
 - 0.2.4 ComfyUIっぽいファイルはPキーでワークフローも込みで丸ごとコピー可能に変更  
 - 0.2.3 Webpアニメーション対応（暫定）、プロンプト情報表示オンオフ対応  
