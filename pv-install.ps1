@@ -2,7 +2,6 @@
 $appdispname = "Prompt Viewer"
 $appfilename = "PromptViewer"
 $iconfilename = "res\" + $appfilename + ".ico"
-$pythonlibs = @("PyQt5", "pyperclip", "Image", "piexif", "pillow-avif-plugin")
 #---- アプリごとに固有の部分 ----
 
 $folder = Split-Path -Parent $MyInvocation.MyCommand.Definition
@@ -30,7 +29,7 @@ Write-Host "----------------------------------------"
 # activate
 . .\venv\Scripts\activate.ps1
 # install python library
-python -m pip install $pythonlibs
+python -m pip install -r requirements.txt
 
 Write-Host "----------------------------------------"
 Write-Host "create shortcut file."

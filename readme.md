@@ -1,6 +1,6 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.2.7
+## PromptViewerについて 0.2.8
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
@@ -43,11 +43,11 @@ jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポ
 - Pythonのインストール（SD標準の3.10.6推奨）  
 - gitのインストール  
 - gitでリポジトリを取得  
-    git clone https://github.com/nekotodance/PromptViewer
-- 必要なライブラリ  
-    pip install PyQt5 pyperclip Image piexif pillow-avif-plugin
+  `git clone https://github.com/nekotodance/PromptViewer`
+- 必要なライブラリ（最新バージョンに更新すると落ちるようです 2025/04/16）  
+  `pip install -r requirements.txt`
 - 実行方法  
-    Python PromptViewer.py
+  `Python PromptViewer.py`
 
 ## 設定ファイルについて
 PromptViewer_settings.jsonに以下の情報を保持しています  
@@ -140,8 +140,10 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - AVIFはAutomatic1111の出力ファイルでのみ表示を確認しています  
 - 現状はpngファイルの場合、Prompt情報の中の改行コードがうまく拾えていません。Imageライブラリの利用方法か、文字コードの指定に問題があるかもしれません  
 - ComfyUIのPrompt情報のコピーや色付けには対応していません  
+- ファイルを裏で消した場合などのエラー処理がいまいちです（いずれ修正します2025/04/16）
 
 ## 変更履歴
+- 0.2.8 pipライブラリのバージョン依存で落ちるケースがあるので、version指定でのインストールに変更  
 - 0.2.7 ComfyUI向け強調表示の処理方法を変更、キーワード追加、他  
 - 0.2.6 zipファイルの文字化けに対応（Windows専用）  
 - 0.2.5 強調表示キーワードを追加、他  

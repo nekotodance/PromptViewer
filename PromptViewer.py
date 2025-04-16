@@ -430,7 +430,7 @@ class ImageViewer(QMainWindow):
                 print(f"not support image file type : {ext}")
                 return None
         except Exception as e:
-            self.image_label.setText(f"Failed to load image: {file}. {e}")
+            self.imageLabel.setText(f"Failed to load image: {file}. {e}")
             return None
         return pixmap
 

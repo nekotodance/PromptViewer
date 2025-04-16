@@ -1,4 +1,4 @@
-## About PromptViewer 0.2.7
+## About PromptViewer 0.2.8
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
@@ -41,11 +41,11 @@ If not necessary, type “n” and press “enter
 - Install Python (SD standard 3.10.6 recommended)  
 - Install git  
 - Get repository with git  
-    git clone https://github.com/nekotodance/PromptViewer
-- Required libraries  
-    pip install PyQt5 pyperclip Image piexif pillow-avif-plugin
+  `git clone https://github.com/nekotodance/PromptViewer`
+- Required libraries(seems to fall down when updating to latest version 04/16/2025)  
+  `pip install -r requirements.txt`
 - How to run  
-    Python PromptViewer.py
+  `Python PromptViewer.py`
 
 ## About the settings file
 PromptViewer_settings.json holds the following information  
@@ -138,8 +138,10 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - AVIF is only available for Automatic1111 output files.  
 - Currently, in the case of png files, line feed codes in the Prompt information are not picked up properly; there may be a problem in the use of the Image library or in the specification of character encoding.  
 - ComfyUI does not support copying or coloring of Prompt information.  
+- Error handling is not very good, such as when a file is deleted behind the scenes (will be fixed eventually 04/16/2025).
 
 ## Changelog
+- 0.2.8 There is a case that the pip library version dependence causes it to fail, so changed to install by specifying version.
 - 0.2.7 Changed processing method of highlighting for ComfyUI, added keywords, etc
 - 0.2.6 Correspondence to garbled characters in zip files (Windows only)
 - 0.2.5 Add highlighted keywords, etc
