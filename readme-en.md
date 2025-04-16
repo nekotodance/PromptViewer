@@ -1,4 +1,4 @@
-## About PromptViewer 0.2.6
+## About PromptViewer 0.2.7
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
@@ -117,8 +117,8 @@ Display the text in different colors and thicknesses as follows
 - Bold orange : Model name  
 - Orange : Colorize text ADetailer prompt, Steps:, steps:  
 
-*ComfyUI is only partially supported as it varies greatly depending on the node used 
-Please modify the source to suit your personal use environment if necessary  
+*ComfyUI is only partially supported as it varies greatly depending on the node used  
+If necessary, modify the source (“Highlighted keywords for ComfyUI” in PromptViewer.py) to suit your personal usage environment.  
 ![PromptViewer-image](docs/PromptViewer-image003.jpg)
 ![PromptViewer-image](docs/PromptViewer-image004.jpg)
 
@@ -140,6 +140,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
+- 0.2.7 Changed processing method of highlighting for ComfyUI, added keywords
 - 0.2.6 Correspondence to garbled characters in zip files (Windows only)
 - 0.2.5 Add highlighted keywords, etc
 - 0.2.4 ComfyUI-like files can be copied in their entirety, including workflow, with the P key.  

@@ -1,6 +1,6 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.2.6
+## PromptViewerについて 0.2.7
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
@@ -120,7 +120,7 @@ ForgeやA1111の場合のPrompt表示イメージ
 - 橙色 : 文字を着色 ADetailer prompt、Steps:、steps:  
 
 ※ComfyUIは利用するノードにより大きく変わるため、部分的にしか対応していません  
-必要があれば個人の利用環境に合わせてソースを修正してください  
+必要があれば個人の利用環境に合わせてソース（PromptViewer.pyの「Highlighted keywords for ComfyUI」）を修正してください  
 ![PromptViewer-image](docs/PromptViewer-image003.jpg)
 ![PromptViewer-image](docs/PromptViewer-image004.jpg)
 
@@ -142,6 +142,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ComfyUIのPrompt情報のコピーや色付けには対応していません  
 
 ## 変更履歴
+- 0.2.7 ComfyUI向け強調表示の処理方法を変更、キーワード追加  
 - 0.2.6 zipファイルの文字化けに対応（Windows専用）  
 - 0.2.5 強調表示キーワードを追加、他  
 - 0.2.4 ComfyUIっぽいファイルはPキーでワークフローも込みで丸ごとコピー可能に変更  

@@ -361,42 +361,54 @@ class ImageViewer(QMainWindow):
         self.infoPrompt = comres
 
         #========================================================
+        #「Highlighted keywords for ComfyUI」
         #場当たり的だが、少しでも見やすくなりそうな強調表示を追加
         #各自見やすくなるように追加してください
         #========================================================
+        promptlists = [
+            [" {\"inputs\": {\"text\": \"", "\","],
+            ["\"result\": \"", "\"},"],
+            ["\"wildcard_text\": \"", "\""],
+            ["\"string\": \"", "\""]
+        ]
+        seedlists = [
+            ["{\"seed\": ", ","],
+            ["\"noise_seed\": ", "}"]
+        ]
+        modellists = [
+            ["\"unet_name\": \"", "\""],
+            ["\"model_name\": \"", "\""],
+            ["\"ckpt_name\": \"", "\""],
+            ["\"model\": \"", "\""]
+        ]
+        loralists = [
+            ["\"lora_name\": \"", "\""],
+        ]
+        pwords = [
+            "Steps:", "steps:", "\"steps\"",
+            "seed:", "\"noise_seed\"", "\"seed\"",
+            "\"ckpt_name\"", "\"model_name\"",
+            "\"positive_prompt\"", "\"negative_prompt\""
+            ]
+
         #promptを灰色に
-        comres = pvsubfunc.insert_between_all(comres,
-                                        " {\"inputs\": {\"text\": \"", "\",",
-                                        "<span style='color: #CCCCCC;'>", "</span>")
+        for searchstr in promptlists:
+            comres = pvsubfunc.insert_between_all(comres,searchstr[0], searchstr[1],
+                    "<span style='color: #CCCCCC;'>", "</span>")
         #SEED番号の強調
-        comres = pvsubfunc.insert_between_all(comres,
-                                        "\"seed\": ", ",",
-                                        "<span style='color: #00FFFF; font-size: 14px;'><b>", "</b></span>")
-        #SEED番号の強調
-        comres = pvsubfunc.insert_between_all(comres,
-                                        "\"noise_seed\": ", "}",
-                                        "<span style='color: #00FFFF; font-size: 14px;'><b>", "</b></span>")
+        for searchstr in seedlists:
+            comres = pvsubfunc.insert_between_all(comres,searchstr[0], searchstr[1],
+                    "<span style='color: #00FFFF; font-size: 14px;'><b>", "</b></span>")
         #Model名の強調
-        comres = pvsubfunc.insert_between_all(comres,
-                                        "\"unet_name\": \"", "\"",
-                                        "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
-        #Model名の強調
-        comres = pvsubfunc.insert_between_all(comres,
-                                        "\"model_name\": \"", "\"",
-                                        "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
-        #Model名の強調
-        comres = pvsubfunc.insert_between_all(comres,
-                                        "\"ckpt_name\": \"", "\"",
-                                        "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
+        for searchstr in modellists:
+            comres = pvsubfunc.insert_between_all(comres,searchstr[0], searchstr[1],
+                    "<span style='color: #FF9900; font-size: 14px;'><b>", "</b></span>")
         #Lora部分の強調
-        comres = pvsubfunc.insert_between_all(comres,
-                                        "{\"lora_name\": \"", "\",",
-                                        "<span style='color: #FFFF00; font-size: 14px;'><b>", "</b></span>")
+        for searchstr in loralists:
+            comres = pvsubfunc.insert_between_all(comres,searchstr[0], searchstr[1],
+                    "<span style='color: #FFFF00; font-size: 14px;'><b>", "</b></span>")
         #各種強調表示（暫定：webpアニメーションでヒットしそうな項目も追加）
-        for pword in {
-            "seed:", "Steps:", "steps:", "\"steps\"", "\"noise_seed\"", "\"ckpt_name\"", "\"seed\"",
-            "\"model_name\"", "\"positive_prompt\"", "\"negative_prompt\""
-            }:
+        for pword in pwords:
             comres = pvsubfunc.add_around_all(comres, pword, "<span style='color: #CC4400;'>", "</span>")
         return comres
 
