@@ -140,7 +140,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ComfyUI does not support copying or coloring of Prompt information.  
 
 ## Changelog
-- 0.2.7 Changed processing method of highlighting for ComfyUI, added keywords
+- 0.2.7 Changed processing method of highlighting for ComfyUI, added keywords, etc
 - 0.2.6 Correspondence to garbled characters in zip files (Windows only)
 - 0.2.5 Add highlighted keywords, etc
 - 0.2.4 ComfyUI-like files can be copied in their entirety, including workflow, with the P key.  
