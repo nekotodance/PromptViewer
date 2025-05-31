@@ -45,12 +45,22 @@ def get_exifcomment_from_Image(img, fname):
         # ComfyUIで作成したwebpアニメーション対応（暫定）
         if not comment or comment == "":
             comment = exif_dict["0th"].get(272)
+        # ComfyUIで作成したPNGをjpg変換したファイルへの対応（暫定）
+        if (not comment or comment == ""):
+            #本来であれば、promptとworkflowを分離したいところではあるが、、
+            keyword = '{"prompt": '
+            exifstr = str(exif_data)
+            pos = exifstr.find(keyword)
+            if pos != -1:
+                comment = str.encode(exifstr[pos + len(keyword):])
+                comment = comment.replace(b"\\\\", b"\\")
         #もしtupleで返却されればbytes型に変換
         if isinstance(comment, tuple):
             comment = bytes(comment)
-        if comment.startswith(b'UNICODE'):
-            comment = comment[len(b'UNICODE'):]
-        comment = comment.replace(b'\x00', b'')
+        if comment:
+            if comment.startswith(b'UNICODE'):
+                comment = comment[len(b'UNICODE'):]
+            comment = comment.replace(b'\x00', b'')
         comment = comment.decode('utf-8')
     except Exception as e:
         print(f"Error get_exifcomment_from_Image {fname}: {e}")
@@ -62,11 +72,14 @@ def get_pngcomment_from_Image(img, fname):
     try:
         if isinstance(img, PngImagePlugin.PngImageFile):
             comment = img.info.get("parameters", "") #1:sd1111 or forge png
-            #--------
-            #T.B.C.:変換後のファイルはComfyUIで開けないが、一応exifコメントには格納しておく用に対応
-            #--------
             if not comment:
+                #--------
+                #T.B.C.
+                # 変換後のファイルはComfyUIで開けないが、一応exifコメントには格納
+                # promptだけではなくworkflowも表示
+                #--------
                 comment = img.info.get("prompt", "") #2:comfyUI png
+                comment += img.info.get("workflow", "") #2:comfyUI png
     except Exception as e:
         print(f"Error get_pngcomment_from_Image {fname}: {e}")
         return None
