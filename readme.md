@@ -1,6 +1,6 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.2.9
+## PromptViewerについて 0.3.0
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
@@ -143,6 +143,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ファイルを裏で消した場合などのエラー処理がいまいちです（いずれ修正します2025/04/16）
 
 ## 変更履歴
+- 0.3.0 ComfyUIのQwenImageEdit2509のプロンプト部分の強調表示に暫定対応  
 - 0.2.9 ComfyUIのworkflow表示に対応（jpg変換後の暫定コード含む）  
 - 0.2.8 pipライブラリのバージョン依存で落ちるケースがあるので、version指定でのインストールに変更  
 - 0.2.7 ComfyUI向け強調表示の処理方法を変更、キーワード追加、他  

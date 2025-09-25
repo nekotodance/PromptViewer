@@ -369,7 +369,8 @@ class ImageViewer(QMainWindow):
             [" {\"inputs\": {\"text\": \"", "\","],
             ["\"result\": \"", "\"},"],
             ["\"wildcard_text\": \"", "\""],
-            ["\"string\": \"", "\""]
+            ["\"string\": \"", "\""],
+            ["\"PrimitiveStringMultiline\"}, \"widgets_values\": [\"", "\""]    #QwenImageEdit2509専用
         ]
         seedlists = [
             ["{\"seed\": ", ","],
@@ -839,9 +840,9 @@ class ImageViewer(QMainWindow):
                 elif keyid == Qt.Key_Up:
                     self.copyImageFile(self.imageFileCopyDir)        #コピー処理
                 elif keyid == Qt.Key_Down:
-                    self.moveImageFile()        #ムーブ処理
+                    #self.moveImageFile()        #ムーブ処理
                     #self.copyImageFile(self.imageFileMoveDir)        #コピー処理２（設定のムーブフォルダへコピー）
-                    #self.showMinimized()        #ウィンドウを最小化
+                    self.showMinimized()        #ウィンドウを最小化
                 return True  # イベントをここで処理したとみなして消費
         return super().eventFilter(obj, event)
 
@@ -890,9 +891,9 @@ class ImageViewer(QMainWindow):
             self.copyImageFile(self.imageFileCopyDir)   #コピー処理
         #ファイルのムーブ処理
         elif keyid in {Qt.Key_S}:       #Qt.Key_DownはeventFilter()にて記載
-            self.moveImageFile()        #ムーブ処理
+            #self.moveImageFile()        #ムーブ処理
             #self.copyImageFile(self.imageFileMoveDir)        #コピー処理２（設定のムーブフォルダへコピー）
-            #self.showMinimized()        #ウィンドウを最小化
+            self.showMinimized()        #ウィンドウを最小化
         #全画面切り替え
         #Qt.Key_Enter, Qt.Key_ReturnはeventFilter()にて記載
         #elif keyid in {Qt.Key_Enter, Qt.Key_Return}:

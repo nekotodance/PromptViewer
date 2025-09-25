@@ -1,4 +1,4 @@
-## About PromptViewer 0.2.9
+## About PromptViewer 0.3.0
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
@@ -141,11 +141,12 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - Error handling is not very good, such as when a file is deleted behind the scenes (will be fixed eventually 04/16/2025).
 
 ## Changelog
-- 0.2.9 Support for ComfyUI workflow display (including provisional code after jpg conversion)
-- 0.2.8 There is a case that the pip library version dependence causes it to fail, so changed to install by specifying version.
-- 0.2.7 Changed processing method of highlighting for ComfyUI, added keywords, etc
-- 0.2.6 Correspondence to garbled characters in zip files (Windows only)
-- 0.2.5 Add highlighted keywords, etc
+- 0.3.0 Temporary support for highlighting the prompt section in ComfyUI's QwenImageEdit2509 - 0.3.0 Temporary support for highlighting the prompt section in ComfyUI's QwenImageEdit2509  
+- 0.2.9 Support for ComfyUI workflow display (including provisional code after jpg conversion)  
+- 0.2.8 There is a case that the pip library version dependence causes it to fail, so changed to install by specifying version.  
+- 0.2.7 Changed processing method of highlighting for ComfyUI, added keywords, etc  
+- 0.2.6 Correspondence to garbled characters in zip files (Windows only)  
+- 0.2.5 Add highlighted keywords, etc  
 - 0.2.4 ComfyUI-like files can be copied in their entirety, including workflow, with the P key.  
 - 0.2.3 Webp animation support (tentative), prompt information display on/off  
 - 0.2.2 Minor modifications, changed the judgment method because there was a sense of discomfort with the 0, 1, and 2 keys, and added Ctrl key combination operation.  
