@@ -25,7 +25,7 @@ def get_pngcomment_from_file(file):
 
 def get_prompt_from_imgfile(img_file):
     fn, ext = os.path.splitext(img_file)
-    if ext.lower() in (".jpg", ".webp", ".avif"):
+    if ext.lower() in (".jpg", ".jpeg", ".webp", ".avif"):
         comment = get_exifcomment_from_file(img_file)
     elif ext.lower() in (".png"):
         comment = get_pngcomment_from_file(img_file)
@@ -87,7 +87,7 @@ def get_pngcomment_from_Image(img, fname):
 
 def get_prompt_from_Image(img, fname):
     fn, ext = os.path.splitext(fname)
-    if ext.lower() in (".jpg", ".webp", ".avif"):
+    if ext.lower() in (".jpg", ".jpeg", ".webp", ".avif"):
         comment = get_exifcomment_from_Image(img, fname)
     elif ext.lower() in (".png"):
         comment = get_pngcomment_from_Image(img, fname)
@@ -115,7 +115,7 @@ def convert_to_avif(infile, outfile, quality, comment):
 
 def convert_image(infile, outfile, imgtype, quality):
     commnet = get_prompt_from_imgfile(infile)
-    if imgtype in (".jpg", ".webp"):
+    if imgtype in (".jpg", ".jpeg", ".webp"):
         convert_to_jpgwebp(infile, outfile, quality, commnet)
     if imgtype == ".png": #not support
         convert_to_png(infile, outfile, quality, commnet)

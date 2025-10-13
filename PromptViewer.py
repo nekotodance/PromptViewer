@@ -416,7 +416,7 @@ class ImageViewer(QMainWindow):
     def loadImageToQPixmapFromFile(self, file):
         fn, ext = os.path.splitext(file)
         try:
-            if ext.lower() in (".jpg", ".webp", ".png"):
+            if ext.lower() in (".jpg", ".jpeg", ".webp", ".png"):
                 pixmap = QPixmap(file)
             elif ext.lower() in (".avif"):
                 img = Image.open(file)
