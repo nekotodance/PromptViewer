@@ -40,6 +40,9 @@ GEOMETRY_W = "geometry-w"
 GEOMETRY_H = "geometry-h"
 SUPPORT_EXT = (".png", ".jpg", ".jpeg", ".webp", ".avif")
 
+DEF_MSG_LOADOK = "image loaded."
+DEF_MSG_LOADERR = "error : Image could not be loaded."
+
 class ImageViewer(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -215,8 +218,10 @@ class ImageViewer(QMainWindow):
         self.imageFolder = os.path.dirname(filePath)
         self.imageFiles = sorted([f for f in os.listdir(self.imageFolder) if f.lower().endswith(SUPPORT_EXT)])
         self.updateTitle()
-        self.updateInfo()
-        self.showStatusBarMes("image loaded.")
+        if self.updateInfo():
+            self.showStatusBarMes(f"{DEF_MSG_LOADOK}")
+        else:
+            self.showStatusBarMes(f"{DEF_MSG_LOADERR}")
 
         self.stop_WEbpMovie()
         if self.currentImage.lower().endswith(".webp"):
@@ -238,8 +243,10 @@ class ImageViewer(QMainWindow):
         self.currentImage = imgname
         self.zip_index = index
         self.updateTitle()
-        self.updateInfo()
-        self.showStatusBarMes("image loaded.")
+        if self.updateInfo():
+            self.showStatusBarMes(f"{DEF_MSG_LOADOK}")
+        else:
+            self.showStatusBarMes(f"{DEF_MSG_LOADERR}")
 
         # 画像のサイズをウィンドウに合わせて拡大縮小
         self.resizeImage()
@@ -370,7 +377,8 @@ class ImageViewer(QMainWindow):
             ["\"result\": \"", "\"},"],
             ["\"wildcard_text\": \"", "\""],
             ["\"string\": \"", "\""],
-            ["\"PrimitiveStringMultiline\"}, \"widgets_values\": [\"", "\""]    #QwenImageEdit2509専用
+            ["\"PrimitiveStringMultiline\"}, \"widgets_values\": [\"", "\""],   #QwenImageEdit2509専用
+            [" {\"inputs\": {\"value\": \"", "\"},"]                            #Wan22
         ]
         seedlists = [
             ["{\"seed\": ", ","],
@@ -384,6 +392,12 @@ class ImageViewer(QMainWindow):
         ]
         loralists = [
             ["\"lora_name\": \"", "\""],
+            ["{\"lora\": \"", "\""],                                            #EasyWan22のLora名に対応
+            ["\"lora_0\": \"", "\""],                                           #EasyWan22のLora名に対応
+            #["\"lora_1\": \"", "\""],                                           #EasyWan22のLora名に対応
+            #["\"lora_2\": \"", "\""],                                           #EasyWan22のLora名に対応
+            #["\"lora_3\": \"", "\""],                                           #EasyWan22のLora名に対応
+            #["\"lora_4\": \"", "\""]                                            #EasyWan22のLora名に対応
         ]
         pwords = [
             "Steps:", "steps:", "\"steps\"",
@@ -436,7 +450,8 @@ class ImageViewer(QMainWindow):
         return pixmap
 
     def updateInfo(self):
-        if not self.currentImage:   return
+        if not self.currentImage:
+            return False
         if self.zip_data:
             pixmap = self.getPixmapFromZip(self.currentImage)
         else:
@@ -449,11 +464,20 @@ class ImageViewer(QMainWindow):
         #ToDo:改行コードの扱いがおかしい
         # pngではreader.textでキャリッジ・リターンが無視されている感じ？
         #imgcomment = sdfileUtility.get_prompt_from_imgfile(self.currentImage)
-        if self.zip_data:
-            img = self.get_zip_Image(self.currentImage)
-        else:
-            img = Image.open(self.currentImage)
-        imgcomment = sdfileUtility.get_prompt_from_Image(img, self.currentImage)
+        try:
+            if self.zip_data:
+                img = self.get_zip_Image(self.currentImage)
+            else:
+                img = Image.open(self.currentImage)
+            imgcomment = sdfileUtility.get_prompt_from_Image(img, self.currentImage)
+        except Exception as e:
+            print(f"error : {e}")
+            self.initCopyInfo()
+            path_info = f"Path: {self.currentImage}"
+            styled_info = f"<span style='color: #008080; font-size: 14px;'>{path_info}</span><br>"
+            styled_info += f"<span style='color: #F00000; font-size: 16px;'><b>{DEF_MSG_LOADERR}</b></span><br>"
+            self.infoTextEdit.setText(styled_info)
+            return False
 
         if imgcomment and imgcomment != "":
             self.filetype = 1
@@ -495,6 +519,7 @@ class ImageViewer(QMainWindow):
         styled_info += f"<span style='color: #008000; font-size: 14px;'><b>{image_info}</b></span><br>"
         styled_info += comment_info
         self.infoTextEdit.setText(styled_info)
+        return True
 
     #zipfileモジュールを利用した場合に文字化けするのでデコードする
     def zipstringdecode(self, name:str):
@@ -626,10 +651,7 @@ class ImageViewer(QMainWindow):
                 self.loadImage(os.path.join(self.imageFolder, self.imageFiles[nextIndex]).replace("\\", "/"))
 
             if nextIndex < currentIndex:
-                self.showStatusBarMes("back to front")
                 self.play_wave(self.soundMoveTop)
-            else:
-                self.showStatusBarMes("")
 
     #前の画像
     def showPreviousImage(self, step=1):
@@ -652,10 +674,7 @@ class ImageViewer(QMainWindow):
                 self.loadImage(os.path.join(self.imageFolder, self.imageFiles[prevIndex]).replace("\\", "/"))
 
             if prevIndex > currentIndex:
-                self.showStatusBarMes("back to rear")
                 self.play_wave(self.soundMoveEnd)
-            else:
-                self.showStatusBarMes("")
 
     # コピーバッファ系の処理
     def copyInfoSeed(self):
