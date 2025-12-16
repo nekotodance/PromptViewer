@@ -21,7 +21,7 @@ import io, time
 args = sys.argv
 
 # アプリ名称
-WINDOW_TITLE = "Prompt Viewer"
+WINDOW_TITLE = "Prompt Viewer 0.3.2"
 # 設定ファイル
 SETTINGS_FILE = "PromptViewer_settings.json"
 # 設定ファイルのキー名
