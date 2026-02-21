@@ -21,7 +21,7 @@ import io, time
 args = sys.argv
 
 # アプリ名称
-WINDOW_TITLE = "Prompt Viewer 0.3.3"
+WINDOW_TITLE = "Prompt Viewer 0.3.4"
 # 設定ファイル
 SETTINGS_FILE = "PromptViewer_settings.json"
 # 設定ファイルのキー名
@@ -714,7 +714,14 @@ class ImageViewer(QMainWindow):
                 self.showStatusBarErrorMes(f"not exist dir [{destdir}]")
                 return
 
-            dest_file = os.path.join(destdir, os.path.basename(srcfile)).replace("\\", "/")
+            # zipファイルの場合は、コピー時のファイル名にzipファイル名も付与
+            if self.zip_data:
+                # test.zipのimg000.jpgの場合、test-img000.jpgとして保存
+                newname = srcfile.replace("/", "-")
+            else:
+                newname = os.path.basename(srcfile)
+
+            dest_file = os.path.join(destdir, newname).replace("\\", "/")
 
             # コピー先に同名のファイルがすでに存在していれば削除のみ実行
             if os.path.exists(dest_file):
