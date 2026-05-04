@@ -21,7 +21,7 @@ import io, time
 args = sys.argv
 
 # アプリ名称
-WINDOW_TITLE = "Prompt Viewer 0.3.4"
+WINDOW_TITLE = "Prompt Viewer 0.3.5"
 # 設定ファイル
 SETTINGS_FILE = "PromptViewer_settings.json"
 # 設定ファイルのキー名
@@ -376,6 +376,7 @@ class ImageViewer(QMainWindow):
             [" {\"inputs\": {\"text\": \"", "\","],
             ["\"result\": \"", "\"},"],
             ["\"wildcard_text\": \"", "\""],
+            ["\"populated_text\": \"", "\""],                                   #for ImpactWildcardProcessor
             ["\"string\": \"", "\""],
             ["\"PrimitiveStringMultiline\"}, \"widgets_values\": [\"", "\""],   #QwenImageEdit2509専用
             [" {\"inputs\": {\"value\": \"", "\"},"],                           #Wan22
@@ -404,7 +405,8 @@ class ImageViewer(QMainWindow):
             "Steps:", "steps:", "\"steps\"",
             "seed:", "\"noise_seed\"", "\"seed\"",
             "\"ckpt_name\"", "\"model_name\"",
-            "\"positive_prompt\"", "\"negative_prompt\""
+            "\"positive_prompt\"", "\"negative_prompt\"",
+            "\"wildcard_text\"", "\"populated_text\""
             ]
 
         #promptを灰色に
