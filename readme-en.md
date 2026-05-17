@@ -1,4 +1,4 @@
-## About PromptViewer 0.3.5
+## About PromptViewer 0.3.6
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
@@ -141,6 +141,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - Error handling is not very good, such as when a file is deleted behind the scenes (will be fixed eventually 04/16/2025).
 
 ## Changelog
+- 0.3.6 ComfyUI now offers limited support for Ollama Generate's highlighting and unicode_escape  
 - 0.3.5 Preliminary support for highlighting in ComfyUI's ImpactWildcardProcessor  
 - 0.3.4 Include the ZIP file name in the copied file name  
 - 0.3.3 Temporary support for highlighting the prompt section in ComfyUI's QwenImageEdit2511  

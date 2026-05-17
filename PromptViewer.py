@@ -21,7 +21,7 @@ import io, time
 args = sys.argv
 
 # アプリ名称
-WINDOW_TITLE = "Prompt Viewer 0.3.5"
+WINDOW_TITLE = "Prompt Viewer 0.3.6"
 # 設定ファイル
 SETTINGS_FILE = "PromptViewer_settings.json"
 # 設定ファイルのキー名
@@ -379,8 +379,8 @@ class ImageViewer(QMainWindow):
             ["\"populated_text\": \"", "\""],                                   #for ImpactWildcardProcessor
             ["\"string\": \"", "\""],
             ["\"PrimitiveStringMultiline\"}, \"widgets_values\": [\"", "\""],   #QwenImageEdit2509専用
-            [" {\"inputs\": {\"value\": \"", "\"},"],                           #Wan22
-            [" {\"prompt\": \"", "\""]                                          #QwenImageEdit2511専用
+            ["\"inputs\": {\"value\": \"", "\"},"],                           #Wan22
+            ["\"prompt\": \"", "\""]                                          #QwenImageEdit2511専用
         ]
         seedlists = [
             ["{\"seed\": ", ","],

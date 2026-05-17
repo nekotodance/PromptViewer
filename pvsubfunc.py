@@ -64,7 +64,7 @@ result = normalize_newlines(input_text)
 """
 
 #指定文字AとBの前後にCとDを追加する（特定文字を見つけて前後にHTMLタグなどを追加）
-def insert_between_all(text, char_a, char_b, insert_c, insert_d):
+def insert_between_all(text, char_a, char_b, insert_c, insert_d, decodeUTF=True):
     start_index = 0
     while True:
         # Aの位置を検索
@@ -79,6 +79,15 @@ def insert_between_all(text, char_a, char_b, insert_c, insert_d):
 
         # AとBの間を抽出し、CとDを追加
         middle_content = text[start_index:end_index]
+        # せめて先頭文字を判定した方が安全かもしれないが、実害はなさそうなう
+        #if decodeUTF and middle_content.startswith(r"\u"):
+        if decodeUTF:
+            # 段落区切り文字を改行に丸める
+            middle_content = middle_content.replace("\u2029", "\n").replace("\u2028", "\n")
+            # デコード
+            middle_content = middle_content.encode("utf-8").decode("unicode_escape")
+            # 念のため改行コードを\nに丸める
+            middle_content = middle_content.replace("\r\n", "\n").replace("\r", "\n")
         modified_middle_content = f"{insert_c}{middle_content}{insert_d}"
         # 元の文字列を更新
         text = text[:start_index] + modified_middle_content + text[end_index:]
