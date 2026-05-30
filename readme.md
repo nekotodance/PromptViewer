@@ -1,6 +1,6 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.3.6
+## PromptViewerについて 0.3.7
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
@@ -143,6 +143,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ファイルを裏で消した場合などのエラー処理がいまいちです（いずれ修正します2025/04/16）
 
 ## 変更履歴
+- 0.3.7 ComfyUIのPower Lora Loader (rgthree)の有効なLora名に暫定対応  
 - 0.3.6 ComfyUIのOllama Generateの強調表示とunicode_escapeに暫定対応  
 - 0.3.5 ComfyUIのImpactWildcardProcessorの強調表示に暫定対応  
 - 0.3.4 コピー時のファイル名にzipファイル名も付与  

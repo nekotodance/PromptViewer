@@ -21,7 +21,7 @@ import io, time
 args = sys.argv
 
 # アプリ名称
-WINDOW_TITLE = "Prompt Viewer 0.3.6"
+WINDOW_TITLE = "Prompt Viewer 0.3.7"
 # 設定ファイル
 SETTINGS_FILE = "PromptViewer_settings.json"
 # 設定ファイルのキー名
@@ -361,7 +361,8 @@ class ImageViewer(QMainWindow):
     def addTextColorComfyUI(self, comstr):
         comres = comstr
         comres = comres.replace('\\"', '\"')
-        comres = comres.replace('\\n', '\n')
+        # フォルダに格納したlora名でnで始まるものがあると消してしまう
+        #comres = comres.replace('\\n', '\n')
         comres = pvsubfunc.normalize_newlines(comres, self.NewLine)
 
         #ComfyUIっぽいファイルはもうまるごとPrompt扱いに
@@ -397,9 +398,7 @@ class ImageViewer(QMainWindow):
             ["{\"lora\": \"", "\""],                                            #EasyWan22のLora名に対応
             ["\"lora_0\": \"", "\""],                                           #EasyWan22のLora名に対応
             #["\"lora_1\": \"", "\""],                                           #EasyWan22のLora名に対応
-            #["\"lora_2\": \"", "\""],                                           #EasyWan22のLora名に対応
-            #["\"lora_3\": \"", "\""],                                           #EasyWan22のLora名に対応
-            #["\"lora_4\": \"", "\""]                                            #EasyWan22のLora名に対応
+            ["\"on\": true, \"lora\": \"", "\""],                               #Power Lora Loader (rgthree)のLora名に対応
         ]
         pwords = [
             "Steps:", "steps:", "\"steps\"",
