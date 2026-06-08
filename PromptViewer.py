@@ -21,7 +21,7 @@ import io, time
 args = sys.argv
 
 # アプリ名称
-WINDOW_TITLE = "Prompt Viewer 0.3.7"
+WINDOW_TITLE = "Prompt Viewer 0.3.8"
 # 設定ファイル
 SETTINGS_FILE = "PromptViewer_settings.json"
 # 設定ファイルのキー名
@@ -305,9 +305,6 @@ class ImageViewer(QMainWindow):
 
     def addTextColorSD(self, comstr):
         comres = "Prompt: " + comstr
-        #文字列部分の改行エスケープを消しておく
-        comres = comres.replace("\"","")
-        comres = comres.replace("\\n", "\n")
 
         #コピー可能なPrompt情報を退避
         res = pvsubfunc.extract_between(comres, "Seed: ", ", Size:")
@@ -360,9 +357,8 @@ class ImageViewer(QMainWindow):
     #T.B.D きちんと要素判定しないと、文字列の検索だけでは厳しい
     def addTextColorComfyUI(self, comstr):
         comres = comstr
-        comres = comres.replace('\\"', '\"')
-        # フォルダに格納したlora名でnで始まるものがあると消してしまう
-        #comres = comres.replace('\\n', '\n')
+        # ファイルパスの表記が\\、改行が\n表示になってしまうが、unicodeデコード時のエラー防止
+        comres = comres.replace('\\', '\\\\')
         comres = pvsubfunc.normalize_newlines(comres, self.NewLine)
 
         #ComfyUIっぽいファイルはもうまるごとPrompt扱いに
@@ -693,6 +689,11 @@ class ImageViewer(QMainWindow):
             self.showStatusBarErrorMes("not support - copy prompt.")
     def copyInfoHighResPrompt(self):
         if self.infoHighResPrompt:
+            #フォルダ名にn始まりがあった場合に改行になってしまう事があるので、そのままにしておく
+            #copystr = self.infoHighResPrompt
+            #if copystr.startswith('"') and copystr.endswith('"'):
+            #    copystr = copystr[1:-1].replace("\\n", "\n")
+            #pyperclip.copy(pvsubfunc.normalize_newlines(copystr, os.linesep))
             pyperclip.copy(pvsubfunc.normalize_newlines(self.infoHighResPrompt, os.linesep))
             self.showStatusBarMes("copied highres prompt.")
         else:
