@@ -85,6 +85,8 @@ def insert_between_all(text, char_a, char_b, insert_c, insert_d, decodeUTF=True)
             # 段落区切り文字を改行に丸める
             middle_content = middle_content.replace("\u2029", "\n").replace("\u2028", "\n")
             # デコード
+            # エスケープで文字列としての\\nにされている場合戻してからdecode
+            middle_content = middle_content.replace('\\\\u', '\\u')
             middle_content = middle_content.encode("utf-8").decode("unicode_escape")
             # 念のため改行コードを\nに丸める
             middle_content = middle_content.replace("\r\n", "\n").replace("\r", "\n")

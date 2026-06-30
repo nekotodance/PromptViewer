@@ -21,7 +21,7 @@ import io, time
 args = sys.argv
 
 # アプリ名称
-WINDOW_TITLE = "Prompt Viewer 0.3.8"
+WINDOW_TITLE = "Prompt Viewer 0.3.9"
 # 設定ファイル
 SETTINGS_FILE = "PromptViewer_settings.json"
 # 設定ファイルのキー名
@@ -310,6 +310,8 @@ class ImageViewer(QMainWindow):
         res = pvsubfunc.extract_between(comres, "Seed: ", ", Size:")
         if res: self.infoSeed = str(res[0])
         res = pvsubfunc.extract_between(comres, "Prompt: ", "Negative prompt: ")
+        if not res:
+            res = pvsubfunc.extract_between(comres, "Prompt: \"", "\"") #ForgeNeo
         if res:
             self.infoPrompt = pvsubfunc.normalize_newlines(res[0], os.linesep)
         res = pvsubfunc.extract_between(comres, "Negative prompt: ", "Steps: ")
@@ -327,6 +329,10 @@ class ImageViewer(QMainWindow):
         #promptを灰色に
         comres = pvsubfunc.insert_between_all(comres,
                                         "Prompt: ", "Negative prompt: ",
+                                        "<span style='color: #CCCCCC;'>", "</span>")
+        #promptを灰色に(ForgeNeo)
+        comres = pvsubfunc.insert_between_all(comres,
+                                        "Prompt: &quot;", "&quot;",
                                         "<span style='color: #CCCCCC;'>", "</span>")
         #negative promptを紫に
         comres = pvsubfunc.insert_between_all(comres,
@@ -370,14 +376,14 @@ class ImageViewer(QMainWindow):
         #各自見やすくなるように追加してください
         #========================================================
         promptlists = [
-            [" {\"inputs\": {\"text\": \"", "\","],
+            [" {\"inputs\": {\"text\": \"", "\","],                             #TextMultilineだとちょっと余計な部分まで拾ってしまう
             ["\"result\": \"", "\"},"],
             ["\"wildcard_text\": \"", "\""],
             ["\"populated_text\": \"", "\""],                                   #for ImpactWildcardProcessor
             ["\"string\": \"", "\""],
             ["\"PrimitiveStringMultiline\"}, \"widgets_values\": [\"", "\""],   #QwenImageEdit2509専用
-            ["\"inputs\": {\"value\": \"", "\"},"],                           #Wan22
-            ["\"prompt\": \"", "\""]                                          #QwenImageEdit2511専用
+            ["\"inputs\": {\"value\": \"", "\"},"],                             #Wan22
+            ["\"prompt\": \"", "\""]                                            #QwenImageEdit2511専用
         ]
         seedlists = [
             ["{\"seed\": ", ","],
@@ -393,7 +399,7 @@ class ImageViewer(QMainWindow):
             ["\"lora_name\": \"", "\""],
             ["{\"lora\": \"", "\""],                                            #EasyWan22のLora名に対応
             ["\"lora_0\": \"", "\""],                                           #EasyWan22のLora名に対応
-            #["\"lora_1\": \"", "\""],                                           #EasyWan22のLora名に対応
+            #["\"lora_1\": \"", "\""],                                          #EasyWan22のLora名に対応
             ["\"on\": true, \"lora\": \"", "\""],                               #Power Lora Loader (rgthree)のLora名に対応
         ]
         pwords = [
