@@ -1,4 +1,4 @@
-## About PromptViewer 0.3.9
+## About PromptViewer 0.3.10
 The PromptViewer is a tool that allows you to check the prompt information of images created by StableDiffusion while sorting them to the specified folder “one-handed”.  
 It works with mouse or keyboard.  
 Supports jpg, png, webp, avif file or zip files of images  
@@ -81,13 +81,13 @@ ZC,PageUp/Down : Skip movement by 10 files
 Q,ESC : Exit  
 0,1,2 : Fit the image to 0:1/2, 1:Equal, 2:2 times the image size (toggle operation)  
 F,Enter : Switch to full screen display (toggle action)  
-W,Top : Copies the displayed image to the folder specified by “image-fcopy-dir” in the configuration file *2  
-S,Down : Move the displayed image to the folder specified by “image-fmove-dir” in the configuration file *3  
+W,E,Top : Copies the displayed image to the folder specified by “image-fcopy-dir” in the configuration file *2  
+S,M,Down : Move the displayed image to the folder specified by “image-fmove-dir” in the configuration file *3  
 K : Seed number to copy buffer *4  
 P : Prompt string to copy buffer *4  
 N : Negative Prompt string to copy buffer *4  
 H : Hires Prompt string to copy buffer *4  
-I : Toggle between displaying and not displaying Prompt information display (toggle operation)
+I : Toggle between displaying Prompt information display (show 1, show 2, and hide)  
 
 #### Mouse operation
 Wheel operation : Move to the next/previous image in the same folder  
@@ -141,8 +141,9 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - Error handling is not very good, such as when a file is deleted behind the scenes (will be fixed eventually 04/16/2025).
 
 ## Changelog
-- 0.3.9 Preliminary support for ForgeNeo
-- 0.3.8 Handling Unicode decoding errors
+- 0.3.10 Changed the information display size to two levels and added highlighting, etc  
+- 0.3.9 Preliminary support for ForgeNeo  
+- 0.3.8 Handling Unicode decoding errors  
 - 0.3.7 Preliminary support for valid Lora names in ComfyUI's Power Lora Loader (rgthree)  
 - 0.3.6 ComfyUI now offers limited support for Ollama Generate's highlighting and unicode_escape  
 - 0.3.5 Preliminary support for highlighting in ComfyUI's ImpactWildcardProcessor  

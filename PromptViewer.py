@@ -21,7 +21,7 @@ import io, time
 args = sys.argv
 
 # アプリ名称
-WINDOW_TITLE = "Prompt Viewer 0.3.9"
+WINDOW_TITLE = "Prompt Viewer 0.3.10"
 # 設定ファイル
 SETTINGS_FILE = "PromptViewer_settings.json"
 # 設定ファイルのキー名
@@ -43,6 +43,9 @@ SUPPORT_EXT = (".png", ".jpg", ".jpeg", ".webp", ".avif")
 DEF_MSG_LOADOK = "image loaded."
 DEF_MSG_LOADERR = "error : Image could not be loaded."
 
+DEF_INFO_WIDTH = 480
+DEF_MINIMUM_SIZE = 320
+
 class ImageViewer(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -52,8 +55,10 @@ class ImageViewer(QMainWindow):
         #全画面を解除してから終了（変な画面サイズが保存されてしまうため）
         if self.fullscreen:
             self.toggleFullscreen()
-        #情報表示をもとに戻してから終了
-        if not self.showInfoText:
+        #情報表示をもとに戻してから終了（かなり強引）
+        if self.showInfoText == 2:
+            self.toggleInfoText()
+        if self.showInfoText == 0:
             self.toggleInfoText()
         #ウィンドウを閉じる際に設定を保存
         self.save_settings()
@@ -68,7 +73,8 @@ class ImageViewer(QMainWindow):
         self.soundFileCansel = ""
         self.soundMoveTop = ""
         self.soundMoveEnd = ""
-        self.infoLabelWidth = 480
+        self.infoLabelWidth = DEF_INFO_WIDTH
+        self.DefinfoLabelWidth = DEF_INFO_WIDTH
         self.filetype = -1     #-1:no comment, 0:org jpg,webp,avif 1:sd1111 or forge png, 2:comfyUI png, 3:other file
         #zipファイル対応
         self.zip_fname = ""     #zipファイル名
@@ -82,7 +88,7 @@ class ImageViewer(QMainWindow):
         self.setStyleSheet("background-color: black;")
 
         self.setGeometry(0, 0, 600, 640)    #位置とサイズ
-        self.setMinimumSize(320 + self.infoLabelWidth, 320)      #最小サイズ（兼デフォルトサイズ）
+        self.setMinimumSize(DEF_MINIMUM_SIZE + self.infoLabelWidth, DEF_MINIMUM_SIZE)      #最小サイズ（兼デフォルトサイズ）
         #設定ファイルが存在しない場合初期値で作成する
         if not os.path.exists(SETTINGS_FILE):
             self.createSettingFile()
@@ -146,7 +152,7 @@ class ImageViewer(QMainWindow):
         self.infoNegaPrompt = ""
         self.infoHighResPrompt = ""
         self.infoSeed = ""
-        self.showInfoText = True
+        self.showInfoText = 1
 
         # アプリ左上のアイコンを設定
         try:
@@ -175,7 +181,7 @@ class ImageViewer(QMainWindow):
         pvsubfunc.write_value_to_config(SETTINGS_FILE, SOUND_F_CANSEL,  "PromptViewer_filecansel.wav")
         pvsubfunc.write_value_to_config(SETTINGS_FILE, SOUND_MOVE_TOP,  "PromptViewer_movetop.wav")
         pvsubfunc.write_value_to_config(SETTINGS_FILE, SOUND_MOVE_END,  "PromptViewer_moveend.wav")
-        pvsubfunc.write_value_to_config(SETTINGS_FILE, INFO_LABEL_W, 480)
+        pvsubfunc.write_value_to_config(SETTINGS_FILE, INFO_LABEL_W, DEF_INFO_WIDTH)
         self.save_settings()
 
     def load_settings(self):
@@ -189,6 +195,7 @@ class ImageViewer(QMainWindow):
         self.soundMoveEnd = pvsubfunc.read_value_from_config(SETTINGS_FILE, SOUND_MOVE_END)
 
         self.infoLabelWidth = pvsubfunc.read_value_from_config(SETTINGS_FILE, INFO_LABEL_W)
+        self.DefinfoLabelWidth = self.infoLabelWidth
         geox = pvsubfunc.read_value_from_config(SETTINGS_FILE, GEOMETRY_X)
         geoy = pvsubfunc.read_value_from_config(SETTINGS_FILE, GEOMETRY_Y)
         geow = pvsubfunc.read_value_from_config(SETTINGS_FILE, GEOMETRY_W)
@@ -197,7 +204,7 @@ class ImageViewer(QMainWindow):
             self.setGeometry(0, 0, 600, 640)    #位置とサイズ
         else:
             self.setGeometry(geox, geoy, geow, geoh)    #位置とサイズ
-        self.setMinimumSize(320 + self.infoLabelWidth, 320)      #最小サイズ（兼デフォルトサイズ）
+        self.setMinimumSize(DEF_MINIMUM_SIZE + self.DefinfoLabelWidth, DEF_MINIMUM_SIZE)      #最小サイズ（兼デフォルトサイズ）
 
     def save_settings(self):
         pvsubfunc.write_value_to_config(SETTINGS_FILE, GEOMETRY_X, self.geometry().x())
@@ -387,7 +394,8 @@ class ImageViewer(QMainWindow):
         ]
         seedlists = [
             ["{\"seed\": ", ","],
-            ["\"noise_seed\": ", "}"]
+            ["\"noise_seed\": ", "}"],
+            ["{\"value\": ", "},"],                                             #自作custom node用
         ]
         modellists = [
             ["\"unet_name\": \"", "\""],
@@ -401,13 +409,16 @@ class ImageViewer(QMainWindow):
             ["\"lora_0\": \"", "\""],                                           #EasyWan22のLora名に対応
             #["\"lora_1\": \"", "\""],                                          #EasyWan22のLora名に対応
             ["\"on\": true, \"lora\": \"", "\""],                               #Power Lora Loader (rgthree)のLora名に対応
+            ["\"lora_index\": ", ","],                                          #自作custom node用
+            ["\"selected_lora\": \"", "\""],                                    #自作custom node用
         ]
         pwords = [
             "Steps:", "steps:", "\"steps\"",
             "seed:", "\"noise_seed\"", "\"seed\"",
             "\"ckpt_name\"", "\"model_name\"",
             "\"positive_prompt\"", "\"negative_prompt\"",
-            "\"wildcard_text\"", "\"populated_text\""
+            "\"wildcard_text\"", "\"populated_text\"",
+            "\"lora_index\"",                                           #自作custom node用
             ]
 
         #promptを灰色に
@@ -553,7 +564,7 @@ class ImageViewer(QMainWindow):
             imgsize = self.centralWidget.size()
             if self.fullscreen == False:
                 correctwidth = self.infoLabelWidth
-                if not self.showInfoText:
+                if self.showInfoText == 0:
                     correctwidth = 0
                 imgsize.setWidth(imgsize.width() - correctwidth)
             if self.currentImage.lower().endswith(".webp"):
@@ -587,7 +598,7 @@ class ImageViewer(QMainWindow):
                 lw = lw * 2
                 lh = lh * 2
 
-            if self.showInfoText:
+            if self.showInfoText != 0:
                 lw += self.infoLabelWidth   # Prompt情報分の幅を追加
             lh += correct_height        # Widghetの領域とウインドウの領域の差分を追加
             self.resize(lw, lh)
@@ -620,17 +631,21 @@ class ImageViewer(QMainWindow):
     def toggleInfoText(self):
         gx = self.geometry().x()
         gy = self.geometry().y()
-        gw = self.geometry().width()
+        gw = self.geometry().width() - self.showInfoText * self.DefinfoLabelWidth
         gh = self.geometry().height()
-        if self.showInfoText:
+        self.showInfoText = (self.showInfoText + 1) % 3
+        if self.showInfoText == 1:
+            self.infoLabelWidth = self.DefinfoLabelWidth
+        elif self.showInfoText == 2:
+            self.infoLabelWidth = self.DefinfoLabelWidth * 2
+        if self.showInfoText == 0:
             self.infoTextEdit.setFixedWidth(0)
-            self.setMinimumSize(320, 320)
-            self.setGeometry(gx, gy, gw - self.infoLabelWidth, gh)
+            self.setMinimumSize(DEF_MINIMUM_SIZE, DEF_MINIMUM_SIZE)
+            self.setGeometry(gx, gy, gw, gh)
         else:
             self.infoTextEdit.setFixedWidth(self.infoLabelWidth)
-            self.setMinimumSize(320 + self.infoLabelWidth, 320)
+            self.setMinimumSize(DEF_MINIMUM_SIZE + self.infoLabelWidth, DEF_MINIMUM_SIZE)
             self.setGeometry(gx, gy, gw + self.infoLabelWidth, gh)
-        self.showInfoText = not self.showInfoText
         self.show()     #ウィジェットが表示/非表示などを切り替える場合など
         self.resizeImage()  # ウィンドウサイズ変更時に画像をリサイズ
 
@@ -875,9 +890,9 @@ class ImageViewer(QMainWindow):
                 elif keyid == Qt.Key_Up:
                     self.copyImageFile(self.imageFileCopyDir)        #コピー処理
                 elif keyid == Qt.Key_Down:
-                    #self.moveImageFile()        #ムーブ処理
+                    self.moveImageFile()        #ムーブ処理
                     #self.copyImageFile(self.imageFileMoveDir)        #コピー処理２（設定のムーブフォルダへコピー）
-                    self.showMinimized()        #ウィンドウを最小化
+                    #self.showMinimized()        #ウィンドウを最小化
                 return True  # イベントをここで処理したとみなして消費
         return super().eventFilter(obj, event)
 
@@ -922,13 +937,13 @@ class ImageViewer(QMainWindow):
         elif keyid == Qt.Key_H:   #copy hires prompt
             self.copyInfoHighResPrompt()
         #ファイルのコピー処理
-        elif keyid in {Qt.Key_W}:       #Qt.Key_UpはeventFilter()にて記載
+        elif keyid in {Qt.Key_W, Qt.Key_E}:       #Qt.Key_UpはeventFilter()にて記載
             self.copyImageFile(self.imageFileCopyDir)   #コピー処理
         #ファイルのムーブ処理
-        elif keyid in {Qt.Key_S}:       #Qt.Key_DownはeventFilter()にて記載
-            #self.moveImageFile()        #ムーブ処理
+        elif keyid in {Qt.Key_S, Qt.Key_M}:       #Qt.Key_DownはeventFilter()にて記載
+            self.moveImageFile()        #ムーブ処理
             #self.copyImageFile(self.imageFileMoveDir)        #コピー処理２（設定のムーブフォルダへコピー）
-            self.showMinimized()        #ウィンドウを最小化
+            #self.showMinimized()        #ウィンドウを最小化
         #全画面切り替え
         #Qt.Key_Enter, Qt.Key_ReturnはeventFilter()にて記載
         #elif keyid in {Qt.Key_Enter, Qt.Key_Return}:

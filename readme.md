@@ -1,6 +1,6 @@
 [README in English](readme-en.md)
 
-## PromptViewerについて 0.3.9
+## PromptViewerについて 0.3.10
 StableDiffusionで作成した画像のプロンプト情報を確認しながら、指定フォルダへの振り分けを「片手」で行うのを目的としたツールです  
 マウスもしくはキーボードで動作します  
 jpg, png, webp, avifファイル、もしくは画像のzipファイルをサポートしています  
@@ -83,13 +83,13 @@ ZC,PageUp/Down : 10ファイル単位のスキップ移動
 Q,ESC     : 終了  
 0,1,2     : 画像のサイズの0:1/2、1:等倍、2:2倍にフィット表示（トグル動作）  
 F,Enter   : 全画面表示に切り替え（トグル動作）  
-W,上      : 設定ファイルのimage-fcopy-dirで指定されたフォルダに表示画像をコピー ※2  
-S,下      : 設定ファイルのimage-fmove-dirで指定されたフォルダに表示画像をムーブ ※3  
+W,E,上    : 設定ファイルのimage-fcopy-dirで指定されたフォルダに表示画像をコピー ※2  
+S,M,下    : 設定ファイルのimage-fmove-dirで指定されたフォルダに表示画像をムーブ ※3  
 K         : シード番号をコピーバッファへ ※4  
 P         : Prompt文字列をコピーバッファへ ※4  
 N         : Negative Prompt文字列をコピーバッファへ ※4  
 H         : Hires Prompt文字列をコピーバッファへ ※4  
-I         : Prompt情報表示の表示・非表示切り替え（トグル動作）  
+I         : Prompt情報表示の切り替え（表示1・表示2・非表示）  
 
 #### マウス操作
 ホイール操作      : 同じフォルダ内の前後の画像に移動  
@@ -143,6 +143,7 @@ https://github.com/nekotodance/PromptViewer/blob/main/docs/PromptViewer-0.2.2bas
 - ファイルを裏で消した場合などのエラー処理がいまいちです（いずれ修正します2025/04/16）
 
 ## 変更履歴
+- 0.3.10 情報表示のサイズを2段階に変更、強調表示の追加、他
 - 0.3.9 ForgeNeoに暫定対応
 - 0.3.8 Unicodeデコードエラー対応
 - 0.3.7 ComfyUIのPower Lora Loader (rgthree)の有効なLora名に暫定対応  
